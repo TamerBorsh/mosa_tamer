@@ -122,33 +122,46 @@ class ExportController extends Controller
                         // إذا كان المستخدم موجودًا بالفعل، يمكنك تحديثه أو تنفيذ عملية أخرى هنا
                     } else {
                         $state_id   = $this->getStateId($row[3]);
-                        $region_id  = $this->getRegionId($row['4']);
+                        $region_id  = $this->getRegionId($row[2]);
                         // $birthdate = isset($row[7]) ? Carbon::createFromFormat('d/m/Y', $row[7])->format('Y-m-d') : null;
 
                         // محاولة تحليل تاريخ الميلاد باستخدام تنسيقات متعددة
-                        $birthdate = null;
-                        $dateFormats = ['d/m/Y', 'Y-m-d', 'Y/m/d']; // تنسيقات متعددة لتواريخ الميلاد
-                        foreach ($dateFormats as $format) {
-                            try {
-                                $birthdate = Carbon::createFromFormat($format, $row[7])->format('Y-m-d');
-                                break;
-                            } catch (\Exception $e) {
-                                // إذا لم يكن التاريخ بهذا التنسيق، حاول التنسيق التالي
-                                continue;
-                            }
-                        }
+                        // $birthdate = null;
+                        // $dateFormats = ['d/m/Y', 'Y-m-d', 'Y/m/d']; // تنسيقات متعددة لتواريخ الميلاد
+                        // foreach ($dateFormats as $format) {
+                        //     try {
+                        //         $birthdate = Carbon::createFromFormat($format, $row[7])->format('Y-m-d');
+                        //         break;
+                        //     } catch (\Exception $e) {
+                        //         // إذا لم يكن التاريخ بهذا التنسيق، حاول التنسيق التالي
+                        //         continue;
+                        //     }
+                        // }
 
                         // إنشاء مستخدم جديد إذا لم يكن موجودًا
                         $user = User::create([
                             'id-number'         => $row[0],
                             'name'              => $row[1] ?? null,
-                            'phone'             => $row[2] ?? null,
+                            // 'phone'             => $row[2] ?? null,
                             'state_id'          => $state_id,
                             'region_id'         => $region_id,
-                            'count_childern'    => $row['6'] ?? null,
-                            'barh-of-date'      => $birthdate,
-                            'socialst'          => $row['8'] ?? null,
-                            'notes'             => $row['9'] ?? null,
+                            'count_childern'    => $row['12'] ?? null,
+
+                            'name-wife'        =>$row['5'] ?? null,
+                            'id-number-wife'        =>$row['4'] ?? null,
+
+                            'name-wife2'        =>$row['7'] ?? null,
+                            'id-number-wife2'        =>$row['6'] ?? null,
+
+                            'name-wife3'        =>$row['9'] ?? null,
+                            'id-number-wife3'        =>$row['8'] ?? null,
+
+                            'name-wife4'        =>$row['11'] ?? null,
+                            'id-number-wife4'        =>$row['10'] ?? null,
+
+                            // 'barh-of-date'      => $birthdate,
+                            // 'socialst'          => $row['8'] ?? null,
+                            // 'notes'             => $row['9'] ?? null,
                         ]);
                     }
                 }
