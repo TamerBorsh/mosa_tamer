@@ -19,15 +19,23 @@ return new class extends Migration
 
             $table->string('name')->index();
             $table->string('id-number', 9)->index()->unique();
+
             $table->string('name-wife')->nullable()->index();
-            $table->string('id-number-wife', 9)->nullable()->index()->unique();
+            $table->string('id-number-wife', 9)->nullable()->index();
+            
+            $table->string('name-wife2')->nullable()->index();
+            $table->string('id-number-wife2', 9)->nullable()->index();
+
+            $table->string('name-wife3')->nullable()->index();
+            $table->string('id-number-wife3', 9)->nullable()->index();
+
+            $table->string('name-wife4')->nullable()->index();
+            $table->string('id-number-wife4', 9)->nullable()->index();
 
             $table->date('barh-of-date')->nullable();
             $table->string('count_childern', 2)->nullable();
             $table->string('phone', 15)->index()->nullable();
-
             $table->string('phone2', 15)->index()->nullable();
-
             $table->enum('gender', ['male', 'fmale'])->nullable();
             $table->tinyInteger('socialst')->nullable();
 
@@ -37,8 +45,6 @@ return new class extends Migration
 
             $table->boolean('is_death')->default(false);
             $table->date('death_date')->nullable();
-
-
 
             $table->timestamps();
         });

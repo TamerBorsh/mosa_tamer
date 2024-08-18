@@ -119,10 +119,27 @@ class ExportController extends Controller
                     $user_exit = User::where('id-number', $row[0])->first();
 
                     if ($user_exit) {
+                        // محاولة تحليل تاريخ الميلاد باستخدام تنسيقات متعددة
+                        $birthdate = null;
+                        $dateFormats = ['d/m/Y', 'Y-m-d', 'Y/m/d']; // تنسيقات متعددة لتواريخ الميلاد
+                        foreach ($dateFormats as $format) {
+                            try {
+                                $birthdate = Carbon::createFromFormat($format, $row[1])->format('Y-m-d');
+                                break;
+                            } catch (\Exception $e) {
+                                // إذا لم يكن التاريخ بهذا التنسيق، حاول التنسيق التالي
+                                continue;
+                            }
+                        }
                         // إذا كان المستخدم موجودًا بالفعل، يمكنك تحديثه أو تنفيذ عملية أخرى هنا
+                        $user_exit->update([
+                            'barh-of-date'              => $birthdate,
+                            'gender'              => $row[2] ?? null,
+                            'socialst'              => $row[3] ?? null,
+                        ]);
                     } else {
-                        $state_id   = $this->getStateId($row[3]);
-                        $region_id  = $this->getRegionId($row[2]);
+                        $state_id   = $this->getStateId($row[2]);
+                        $region_id  = $this->getRegionId($row[3]);
                         // $birthdate = isset($row[7]) ? Carbon::createFromFormat('d/m/Y', $row[7])->format('Y-m-d') : null;
 
                         // محاولة تحليل تاريخ الميلاد باستخدام تنسيقات متعددة
@@ -139,30 +156,30 @@ class ExportController extends Controller
                         // }
 
                         // إنشاء مستخدم جديد إذا لم يكن موجودًا
-                        $user = User::create([
-                            'id-number'         => $row[0],
-                            'name'              => $row[1] ?? null,
-                            // 'phone'             => $row[2] ?? null,
-                            'state_id'          => $state_id,
-                            'region_id'         => $region_id,
-                            'count_childern'    => $row['12'] ?? null,
+                        // $user = User::create([
+                        //     'id-number'         => $row[0],
+                        //     'name'              => $row[1] ?? null,
+                        //     // 'phone'             => $row[2] ?? null,
+                        //     'state_id'          => $state_id,
+                        //     'region_id'         => $region_id,
+                        //     'count_childern'    => $row['5'] ?? null,
 
-                            'name-wife'        =>$row['5'] ?? null,
-                            'id-number-wife'        =>$row['4'] ?? null,
+                        //     'name-wife'        =>$row['6'] ?? null,
+                        //     'id-number-wife'        =>$row['7'] ?? null,
 
-                            'name-wife2'        =>$row['7'] ?? null,
-                            'id-number-wife2'        =>$row['6'] ?? null,
+                        //     'name-wife2'        =>$row['8'] ?? null,
+                        //     'id-number-wife2'        =>$row['9'] ?? null,
 
-                            'name-wife3'        =>$row['9'] ?? null,
-                            'id-number-wife3'        =>$row['8'] ?? null,
+                        //     'name-wife3'        =>$row['10'] ?? null,
+                        //     'id-number-wife3'        =>$row['11'] ?? null,
 
-                            'name-wife4'        =>$row['11'] ?? null,
-                            'id-number-wife4'        =>$row['10'] ?? null,
+                        //     'name-wife4'        =>$row['12'] ?? null,
+                        //     'id-number-wife4'        =>$row['13'] ?? null,
 
-                            // 'barh-of-date'      => $birthdate,
-                            // 'socialst'          => $row['8'] ?? null,
-                            // 'notes'             => $row['9'] ?? null,
-                        ]);
+                        //     // 'barh-of-date'      => $birthdate,
+                        //     // 'socialst'          => $row['8'] ?? null,
+                        //     // 'notes'             => $row['9'] ?? null,
+                        // ]);
                     }
                 }
                 return redirect()->back()->with('success', 'Data imported successfully!');
