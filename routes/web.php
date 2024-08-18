@@ -19,8 +19,8 @@ use Illuminate\Support\Facades\Route;
 // Auth Route
 require_once (__DIR__) . '/auth.php';
 
-Route::get('artisan_db', function () {
-    // \Artisan::call('optimize:clear');
+Route::get('optimize', function () {
+    \Artisan::call('optimize:clear');
     // \Artisan::call('migrate --seed');
     // dd("done");
 });
