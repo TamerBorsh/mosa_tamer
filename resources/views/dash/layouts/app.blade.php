@@ -109,7 +109,7 @@
     <!-- BEGIN Vendor JS-->
 
     <!-- BEGIN: Theme JS-->
-    <script src="/app-assets/js/core/app-menu.min.js" defer></script>
+    <script src="/app-assets/js/core/app-menu.min.js"></script>
     <script src="/app-assets/js/core/app.min.js" defer></script>
     <!-- END: Theme JS-->
 
@@ -121,5 +121,4 @@
     @stack('script')
 </body>
 <!-- END: Body-->
-
 </html>
