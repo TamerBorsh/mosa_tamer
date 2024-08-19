@@ -16,7 +16,7 @@
             </li>
             <li class=" nav-item"><a href="{{route('mosques.index')}}"><i class="la la-lock"></i><span class="menu-title">المساجد</span></a>
             </li>
-          
+
 
             <li class=" nav-item"><a href="javascript:;"><i class="la la-user"></i><span class="menu-title">المستفيدين</span></a>
                 <ul class="menu-content">
@@ -35,6 +35,8 @@
                     <li><a class="menu-item" href="{{route('nominates.index')}}"><i></i><span>عرض الكل</span></a>
                     </li>
                     <li><a class="menu-item" href="{{route('nominates.importExcelForm')}}"><i></i><span>استيراد Excel</span></a>
+                    </li>
+                    <li><a class="menu-item" href="{{route('nominates.importFormNominatesForm')}}"><i></i><span>استيراد ملف ترشيح</span></a>
                     </li>
                 </ul>
             </li>

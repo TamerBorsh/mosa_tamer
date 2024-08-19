@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreignId('location_id')->constrained()->onDelete('cascade'); // ربط الكوبونات بالمخزن
             $table->foreignId('admin_id')->constrained('admins')->cascadeOnDelete();
             $table->string('name', 191)->index();
-            $table->integer('quantity')->index(); // كمية الكوبونات
-            $table->text('type')->nullable();
+            $table->integer('quantity')->index()->nullable(); // كمية الكوبونات
+            $table->text('type')->nullable()->default('1');
             $table->text('notes')->nullable();
             $table->timestamps();
         });

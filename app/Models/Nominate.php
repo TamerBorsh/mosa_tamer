@@ -82,6 +82,7 @@ class Nominate extends Model
             $nominate->number_copon = self::getNextCoponNumber();
         });
     }
+    
     protected static function getNextCoponNumber()
     {
         $year = Carbon::now()->year;

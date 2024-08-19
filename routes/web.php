@@ -12,7 +12,8 @@ use App\Http\Controllers\Nominate\ImportNominateController;
 use App\Http\Controllers\Nominate\NominateController;
 use App\Http\Controllers\Region\RegionController;
 use App\Http\Controllers\Role\RoleController;
-use App\Http\Controllers\User\ExportController;
+use App\Http\Controllers\User\ExportUserController;
+use App\Http\Controllers\User\ImportUserController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,10 +39,12 @@ Route::group(['middleware' => 'auth:admin', 'prefix' => 'dash'], function () {
         Route::get('/get-detalies/{id}',        'detalies');
         Route::post('/del-check',               'delCheckAll')->name('users.delCheck');
     });
-    Route::controller(ExportController::class)->prefix('phpspreadsheet')->group(function () {
-        Route::get('/import-excel-form',        'importExcelForm')->name('users.importExcelForm');
-        Route::post('/import-excel_file',       'ImportEcel')->name('users.ImportEcel');
-        Route::get('/export-excel_file',        'ExportEcel')->name('users.ExportEcel');
+    Route::controller(ImportUserController::class)->prefix('users/phpspreadsheet')->group(function () {
+        Route::get('/import',        'importExcelForm')->name('users.importExcelForm');
+        Route::post('/import-excel',       'ImportExcel')->name('users.ImportEcel');
+    });
+    Route::controller(ExportUserController::class)->prefix('users/phpspreadsheet')->group(function () {
+        Route::get('/export',        'ExportExcel')->name('users.ExportEcel');
     });
     Route::controller(MosqueController::class)->prefix('mosques')->group(function () {
         Route::post('/update-data',             'updateData')->name('mosques.updateData');
@@ -71,6 +74,9 @@ Route::group(['middleware' => 'auth:admin', 'prefix' => 'dash'], function () {
     Route::controller(ImportNominateController::class)->prefix('nominates')->group(function () {
         Route::get('/import-excel',             'importExcelForm')->name('nominates.importExcelForm');
         Route::post('/import-excel_file',       'import')->name('nominates.ImportEcel');
+
+        Route::get('/import',             'importFormNominates')->name('nominates.importFormNominatesForm');
+        Route::post('/import-excel_file',       'importExcel')->name('nominates.importFormNominates');
     });
 
     Route::resources([
