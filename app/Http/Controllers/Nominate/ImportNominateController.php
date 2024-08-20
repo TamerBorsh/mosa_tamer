@@ -4,14 +4,7 @@ namespace App\Http\Controllers\Nominate;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\Nominate\ImportExcelJob;
-use App\Models\Coupon;
-use App\Models\Institution;
-use App\Models\Location;
-use App\Models\Nominate;
-use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class ImportNominateController extends Controller

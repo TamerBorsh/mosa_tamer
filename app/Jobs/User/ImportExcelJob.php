@@ -3,6 +3,7 @@
 namespace App\Jobs\User;
 
 use App\Models\Location;
+use App\Models\Log;
 use App\Models\Region;
 use App\Models\State;
 use App\Models\User;
@@ -38,10 +39,9 @@ class ImportExcelJob implements ShouldQueue
             $sheet = $spreadsheet->getActiveSheet();
             $data = $sheet->toArray();
 
-            $batchSize = 1000; // حجم الدفعة
+            $batchSize = 100; // حجم الدفعة
             $batchData = [];
 
-            // الآن لديك البيانات في مصفوفة $data، يمكنك معالجتها كما تريد
             foreach ($data as $index => $row) {
                 // تجاوز صف الهيدر
                 if ($index == 0) {
@@ -54,16 +54,20 @@ class ImportExcelJob implements ShouldQueue
                 // التحقق من وجود المستخدم
                 $user = User::where('id-number', $row[0])->first();
 
+                $userData = $this->prepareUserData($row, $birthdate);
+
                 if ($user) {
                     // تحديث المستخدم إذا كان موجودًا
-                    $user->update($this->prepareUserData($row, $birthdate));
+                    $user->update($userData);
                 } else {
                     // إضافة المستخدم الجديد إلى الدفعة
-                    $batchData[] = $this->prepareUserData($row, $birthdate);
+                    $batchData[] = $userData;
 
                     // إذا وصلت الدفعة إلى الحجم المحدد، أدخل البيانات إلى قاعدة البيانات
                     if (count($batchData) >= $batchSize) {
-                        User::insert($batchData);
+                        foreach ($batchData as $data) {
+                            User::create($data);
+                        }
                         $batchData = []; // إفراغ الدفعة
                     }
                 }
@@ -71,14 +75,25 @@ class ImportExcelJob implements ShouldQueue
 
             // إدخال أي بيانات متبقية في الدفعة الأخيرة
             if (!empty($batchData)) {
-                User::insert($batchData);
+                foreach ($batchData as $data) {
+                    User::create($data);
+                }
             }
 
             // return redirect()->back()->with('success', 'Data imported successfully!');
         } catch (\Exception $e) {
-            \Log::error('Error processing the file: ' . $e->getMessage());
+            Log::create([
+                'level' => 'error',
+                'message' => 'Error processing the file: ' . $e->getMessage(),
+                'context' => json_encode([
+                    'file_path' => $this->filePath,
+                    'line' => $e->getLine(),
+                    'file' => $e->getFile(),
+                ]),
+            ]);
         }
     }
+
 
     // تحليل التاريخ من تنسيقات متعددة
     private function parseDate($dateString)

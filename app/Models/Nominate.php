@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 
 class Nominate extends Model
 {
@@ -79,22 +80,28 @@ class Nominate extends Model
     protected static function booted()
     {
         static::creating(function (Nominate $nominate) {
-            $nominate->number_copon = self::getNextCoponNumber();
+            $nominate->number_copon = DB::transaction(function () {
+                return self::getNextCoponNumber();
+            });
         });
     }
-    
+
     protected static function getNextCoponNumber()
     {
         $year = Carbon::now()->year;
-        // الحصول على أكبر رقم حالياً في قاعدة البيانات لهذا العام
+
+        // قفل الجدول لتجنب التكرارات في البيئات متعددة المستخدمين
         $number = Nominate::whereYear('created_at', $year)
+            ->lockForUpdate()
             ->max('number_copon');
+
         // تحديد الرقم التالي بناءً على الرقم الأكبر الموجود
         if ($number) {
             $nextNumber = $number + 1;
         } else {
             $nextNumber = 1;
         }
+
         // تنسيق الرقم ليكون دائمًا من خمسة أرقام
         return str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
     }

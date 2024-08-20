@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('coupon_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('admin_id')->constrained()->cascadeOnDelete();
-            $table->string('number_copon')->nullable();
+            $table->string('number_copon')->nullable()->unique();
             $table->date('recive_date')->nullable();
             $table->date('redirect_date')->nullable();
             $table->boolean('is_recive')->default(false);

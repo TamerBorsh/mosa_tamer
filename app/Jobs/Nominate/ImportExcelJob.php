@@ -35,6 +35,66 @@ class ImportExcelJob implements ShouldQueue
     /**
      * Execute the job.
      */
+    // public function handle(): void
+    // {
+    //     try {
+    //         // تحميل الملف باستخدام PhpSpreadsheet
+    //         $spreadsheet = IOFactory::load($this->filePath);
+    //         $sheet = $spreadsheet->getActiveSheet();
+    //         $data = $sheet->toArray();
+
+    //         $batchSize = 500; // حجم الدفعة
+    //         $batchData = [];
+
+    //         // الآن لديك البيانات في مصفوفة $data، يمكنك معالجتها كما تريد
+    //         foreach ($data as $index => $row) {
+    //             // تجاوز صف الهيدر
+    //             if ($index == 0) {
+    //                 continue;
+    //             }
+
+    //             $user = User::where('id-number', $row[0])->first();
+
+    //             if ($user) {
+    //                 $institutionName = $row[6]; // Assuming institution name is in column 7 (index 6)
+    //                 $locationName = $row[5]; // Assuming location name is in column 6 (index 5)
+
+    //                 $batchData[] = $this->prepareUserData($row, $user->id, $locationName, $institutionName);
+
+    //                 // إذا وصلت الدفعة إلى الحجم المحدد، أدخل البيانات إلى قاعدة البيانات
+    //                 if (count($batchData) >= $batchSize) {
+    //                     Nominate::insert($batchData);
+    //                     $batchData = []; // إفراغ الدفعة
+    //                 }
+    //             } else {
+    //                 // تسجيل خطأ إذا لم يتم العثور على المستخدم
+    //                 Log::create([
+    //                     'level' => 'error',
+    //                     'message' => 'User not found for id-number: ' . $row[0],
+    //                     'context' => json_encode([
+    //                         'file_path' => $this->filePath,
+    //                         'row' => $row,
+    //                     ]),
+    //                 ]);
+    //             }
+    //         }
+
+    //         // إدخال أي بيانات متبقية في الدفعة الأخيرة
+    //         if (!empty($batchData)) {
+    //             Nominate::insert($batchData);
+    //         }
+    //     } catch (\Exception $e) {
+    //         Log::create([
+    //             'level' => 'error',
+    //             'message' => 'Error processing the file: ' . $e->getMessage(),
+    //             'context' => json_encode([
+    //                 'file_path' => $this->filePath,
+    //                 'line' => $e->getLine(),
+    //                 'file' => $e->getFile(),
+    //             ]),
+    //         ]);
+    //     }
+    // }
     public function handle(): void
     {
         try {
@@ -43,10 +103,6 @@ class ImportExcelJob implements ShouldQueue
             $sheet = $spreadsheet->getActiveSheet();
             $data = $sheet->toArray();
 
-            $batchSize = 1000; // حجم الدفعة
-            $batchData = [];
-
-            // الآن لديك البيانات في مصفوفة $data، يمكنك معالجتها كما تريد
             foreach ($data as $index => $row) {
                 // تجاوز صف الهيدر
                 if ($index == 0) {
@@ -59,13 +115,10 @@ class ImportExcelJob implements ShouldQueue
                     $institutionName = $row[6]; // Assuming institution name is in column 7 (index 6)
                     $locationName = $row[5]; // Assuming location name is in column 6 (index 5)
 
-                    $batchData[] = $this->prepareUserData($row, $user->id, $locationName, $institutionName);
+                    $userData = $this->prepareUserData($row, $user->id, $locationName, $institutionName);
 
-                    // إذا وصلت الدفعة إلى الحجم المحدد، أدخل البيانات إلى قاعدة البيانات
-                    if (count($batchData) >= $batchSize) {
-                        Nominate::insert($batchData);
-                        $batchData = []; // إفراغ الدفعة
-                    }
+                    // إنشاء سجل باستخدام create بدلاً من insert
+                    Nominate::create($userData);
                 } else {
                     // تسجيل خطأ إذا لم يتم العثور على المستخدم
                     Log::create([
@@ -77,11 +130,6 @@ class ImportExcelJob implements ShouldQueue
                         ]),
                     ]);
                 }
-            }
-
-            // إدخال أي بيانات متبقية في الدفعة الأخيرة
-            if (!empty($batchData)) {
-                Nominate::insert($batchData);
             }
         } catch (\Exception $e) {
             Log::create([
@@ -121,9 +169,6 @@ class ImportExcelJob implements ShouldQueue
             'recive_date'   => $this->parseDate($row[2]),
             'redirect_date' => $this->parseDate($row[3]),
             'is_recive'     => $row[4],
-            'number_copon'  => Nominate::getNextCoponNumber(), // هنا تستدعي الدالة لإنشاء رقم القسيمة
-            'created_at'    => now(),
-            'updated_at'    => now(),
         ];
     }
 
