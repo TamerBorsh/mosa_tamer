@@ -5,6 +5,7 @@ namespace App\Jobs\Nominate;
 use App\Models\Coupon;
 use App\Models\Institution;
 use App\Models\Location;
+use App\Models\Log;
 use App\Models\Nominate;
 use App\Models\User;
 use Carbon\Carbon;
@@ -66,7 +67,15 @@ class ImportExcelJob implements ShouldQueue
                         $batchData = []; // إفراغ الدفعة
                     }
                 } else {
-                    \Log::error('المستخدم غير موجود: ' . $row[0]);
+                    // تسجيل خطأ إذا لم يتم العثور على المستخدم
+                    Log::create([
+                        'level' => 'error',
+                        'message' => 'User not found for id-number: ' . $row[0],
+                        'context' => json_encode([
+                            'file_path' => $this->filePath,
+                            'row' => $row,
+                        ]),
+                    ]);
                 }
             }
 
@@ -75,7 +84,15 @@ class ImportExcelJob implements ShouldQueue
                 Nominate::insert($batchData);
             }
         } catch (\Exception $e) {
-            \Log::error('Error processing the file: ' . $e->getMessage());
+            Log::create([
+                'level' => 'error',
+                'message' => 'Error processing the file: ' . $e->getMessage(),
+                'context' => json_encode([
+                    'file_path' => $this->filePath,
+                    'line' => $e->getLine(),
+                    'file' => $e->getFile(),
+                ]),
+            ]);
         }
     }
 
