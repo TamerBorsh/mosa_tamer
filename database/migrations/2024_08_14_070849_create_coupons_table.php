@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('admin_id')->constrained('admins')->cascadeOnDelete();
             $table->string('name', 191)->index();
             $table->integer('quantity')->index()->nullable(); // كمية الكوبونات
-            $table->text('type')->nullable()->default('1');
+            $table->tinyInteger('type')->default('1');
             $table->text('notes')->nullable();
             $table->timestamps();
         });
