@@ -31,6 +31,7 @@ class ImportExcelJob implements ShouldQueue
     /**
      * Execute the job.
      */
+
     public function handle(): void
     {
         try {
@@ -39,9 +40,6 @@ class ImportExcelJob implements ShouldQueue
             $sheet = $spreadsheet->getActiveSheet();
             $data = $sheet->toArray();
 
-            $batchSize = 100; // حجم الدفعة
-            $batchData = [];
-
             foreach ($data as $index => $row) {
                 // تجاوز صف الهيدر
                 if ($index == 0) {
@@ -49,7 +47,7 @@ class ImportExcelJob implements ShouldQueue
                 }
 
                 // محاولة تحليل تاريخ الميلاد باستخدام تنسيقات متعددة
-                $birthdate = $this->parseDate($row[5]);
+                $birthdate = $this->parseDate($row['7']);
 
                 // التحقق من وجود المستخدم
                 $user = User::where('id-number', $row[0])->first();
@@ -60,40 +58,21 @@ class ImportExcelJob implements ShouldQueue
                     // تحديث المستخدم إذا كان موجودًا
                     $user->update($userData);
                 } else {
-                    // إضافة المستخدم الجديد إلى الدفعة
-                    $batchData[] = $userData;
-
-                    // إذا وصلت الدفعة إلى الحجم المحدد، أدخل البيانات إلى قاعدة البيانات
-                    if (count($batchData) >= $batchSize) {
-                        foreach ($batchData as $data) {
-                            User::create($data);
-                        }
-                        $batchData = []; // إفراغ الدفعة
-                    }
+                    // إنشاء مستخدم جديد إذا لم يكن موجودًا
+                    User::create($userData);
                 }
             }
-
-            // إدخال أي بيانات متبقية في الدفعة الأخيرة
-            if (!empty($batchData)) {
-                foreach ($batchData as $data) {
-                    User::create($data);
-                }
-            }
-
-            // return redirect()->back()->with('success', 'Data imported successfully!');
         } catch (\Exception $e) {
             Log::create([
                 'level' => 'error',
-                'message' => 'Error processing the file: ' . $e->getMessage(),
+                'message' => $e->getMessage(),
                 'context' => json_encode([
                     'file_path' => $this->filePath,
-                    'line' => $e->getLine(),
-                    'file' => $e->getFile(),
+                    'row' => $row,
                 ]),
             ]);
         }
     }
-
 
     // تحليل التاريخ من تنسيقات متعددة
     private function parseDate($dateString)
@@ -112,22 +91,24 @@ class ImportExcelJob implements ShouldQueue
     private function prepareUserData($row, $birthdate)
     {
         return [
-            'id-number' => $row[0],
-            'name' => $row[1] ?? null,
-            'state_id' =>  $this->getStateId($row[2]),
-            'region_id' => $this->getRegionId($row[3]),
-            'count_childern' => $row[4] ?? null,
-            'name-wife' => $row[6] ?? null,
-            'id-number-wife' => $row[7] ?? null,
-            'name-wife2' => $row[8] ?? null,
-            'id-number-wife2' => $row[9] ?? null,
-            'name-wife3' => $row[10] ?? null,
-            'id-number-wife3' => $row[11] ?? null,
-            'name-wife4' => $row[12] ?? null,
-            'id-number-wife4' => $row[13] ?? null,
+            'id-number' => $row['0'],
+            'name' => $row['1'] ?? null,
+            'state_id' =>  $this->getStateId($row['2']),
+            'region_id' => $this->getRegionId($row['3']),
+            'phone' => $this->getRegionId($row['4']),
+            'phone2' => $this->getRegionId($row['5']),
+            'count_childern' => $row[6] ?? null,
             'barh-of-date' => $birthdate,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'gender' => $row['8'] ?? null,
+            'socialst' => $row['9'] ?? null,
+            'name-wife' => $row['10'] ?? null,
+            'id-number-wife' => $row['11'] ?? null,
+            'name-wife2' => $row['12'] ?? null,
+            'id-number-wife2' => $row['13'] ?? null,
+            'name-wife3' => $row['14'] ?? null,
+            'id-number-wife3' => $row['15'] ?? null,
+            'name-wife4' => $row['16'] ?? null,
+            'id-number-wife4' => $row['17'] ?? null,
         ];
     }
 

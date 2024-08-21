@@ -20,41 +20,56 @@ class ExportUserController extends Controller
         $headerRow = [
             'الهوية',
             'الاسم',
-            'تاريخ الميلاد',
-            'عدد الأفراد',
-            'جوال 1',
-            'جوال 2',
             'المحافظة',
             'المنطقة',
-            'أقرب مسجد',
+            'جوال 1',
+            'جوال 2',
+            'عدد الأفراد',
+            'تاريخ الميلاد',
             'الجنس',
-            'الحالة الاجتماعية'
+            'الحالة الاجتماعية',
+            'اسم الزوجة',
+            'هوية الزوجة',
+            'اسم الزوجة 2',
+            'هوية الزوجة 2',
+            'اسم الزوجة 3',
+            'هوية الزوجة 3',
+            'اسم الزوجة 4',
+            'هوية الزوجة 4',
         ];
         $sheet->fromArray($headerRow, null, 'A1');
 
-        $batchSize = 1000; // حجم الدفعة
+        $batchSize = 500; // حجم الدفعة
         $rowIndex = 2; // بداية الصفوف بعد الهيدر
 
         // استخدم chunks للحصول على البيانات على دفعات
         User::Filter($request->query())->chunk($batchSize, function ($users) use ($sheet, &$rowIndex) {
             $batchData = [];
             foreach ($users as $user) {
-                $city = optional($user->state)->name;
+                $state = optional($user->state)->name;
                 $region = optional($user->region)->name;
                 $mosque = optional($user->mosque)->name;
 
                 $batchData[] = [
                     $user->{'id-number'},
                     $user->name,
-                    $user->{'barh-of-date'},
-                    $user->count_childern,
+                    $state,
+                    $region,
                     $user->phone,
                     $user->phone2,
-                    $city,
-                    $region,
-                    $mosque,
+                    $user->count_childern,
+                    $user->{'barh-of-date'},
                     $user->gender,
-                    $user->socialst
+                    $user->socialst,
+                    $user->{'name-wife'},
+                    $user->{'id-number-wife'},
+                    $user->{'name-wife2'},
+                    $user->{'id-number-wife2'},
+                    $user->{'name-wife3'},
+                    $user->{'id-number-wife3'},
+                    $user->{'name-wife4'},
+                    $user->{'id-number-wife4'},
+                    // $mosque,
                 ];
             }
 

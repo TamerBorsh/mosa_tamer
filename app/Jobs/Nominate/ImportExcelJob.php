@@ -109,26 +109,28 @@ class ImportExcelJob implements ShouldQueue
                     continue;
                 }
 
-                $user = User::where('id-number', $row[0])->whereNotNull($row[2])->first();
+                if ($row[2] != null) {
+                    $user = User::where('id-number', $row[0])->first();
 
-                if ($user) {
-                    $institutionName = $row[6]; // Assuming institution name is in column 7 (index 6)
-                    $locationName = $row[5]; // Assuming location name is in column 6 (index 5)
+                    if ($user) {
+                        $institutionName = $row[6]; // Assuming institution name is in column 7 (index 6)
+                        $locationName = $row[5]; // Assuming location name is in column 6 (index 5)
 
-                    $userData = $this->prepareUserData($row, $user->id, $locationName, $institutionName);
+                        $userData = $this->prepareUserData($row, $user->id, $locationName, $institutionName);
 
-                    // إنشاء سجل باستخدام create بدلاً من insert
-                    Nominate::create($userData);
-                } else {
-                    // تسجيل خطأ إذا لم يتم العثور على المستخدم
-                    Log::create([
-                        'level' => 'error',
-                        'message' => 'User not found for id-number: ' . $row[0],
-                        'context' => json_encode([
-                            'file_path' => $this->filePath,
-                            'row' => $row,
-                        ]),
-                    ]);
+                        // إنشاء سجل باستخدام create بدلاً من insert
+                        Nominate::create($userData);
+                    } else {
+                        // تسجيل خطأ إذا لم يتم العثور على المستخدم
+                        Log::create([
+                            'level' => 'error',
+                            'message' => 'User not found for id-number: ' . $row[0],
+                            'context' => json_encode([
+                                'file_path' => $this->filePath,
+                                'row' => $row,
+                            ]),
+                        ]);
+                    }
                 }
             }
         } catch (\Exception $e) {
