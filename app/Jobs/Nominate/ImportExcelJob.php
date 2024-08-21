@@ -109,7 +109,7 @@ class ImportExcelJob implements ShouldQueue
                     continue;
                 }
 
-                $user = User::where('id-number', $row[0])->first();
+                $user = User::where('id-number', $row[0])->whereNotNull($row[2])->first();
 
                 if ($user) {
                     $institutionName = $row[6]; // Assuming institution name is in column 7 (index 6)
