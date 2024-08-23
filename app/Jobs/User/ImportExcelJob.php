@@ -30,87 +30,84 @@ class ImportExcelJob implements ShouldQueue
     /**
      * Execute the job.
      */
+    public function handle(): void
+    {
+        try {
+            // تحميل الملف باستخدام PhpSpreadsheet
+            $spreadsheet = IOFactory::load($this->filePath);
+            $sheet = $spreadsheet->getActiveSheet();
+            $data = $sheet->toArray();
 
-     public function handle(): void
-     {
-         try {
-             // Use PhpSpreadsheet Reader
-             $reader = IOFactory::createReaderForFile($this->filePath);
-             $reader->setReadDataOnly(true); // Only read data
-             $spreadsheet = $reader->load($this->filePath);
-             $sheet = $spreadsheet->getActiveSheet();
-             $data = $sheet->toArray(null, true, true, true); // Read data with keys
-     
-             // Define the chunk size
-             $chunkSize = 7000;
-             $chunks = array_chunk($data, $chunkSize);
-     
-             foreach ($chunks as $chunk) {
-                 foreach ($chunk as $index => $row) {
-                     // Skip the header row
-                     if ($index === 1) {
-                         continue;
-                     }
-     
-                     // Attempt to parse the birth date with multiple formats
-                     $birthdate = $this->parseDate($row['7']);
-     
-                     // Check if the user exists
-                     $user = User::where('id-number', $row['0'])->first();
-     
-                     $userData = $this->prepareUserData($row, $birthdate);
-     
-                     if ($user) {
-                         // Filter out null values from the update
-                         $filteredData = array_filter($userData, function ($value) {
-                             return $value !== null;
-                         });
-     
-                         $user->update($filteredData);
-                     } else {
-                         // Create a new user if not exists
-                         User::create($userData);
-                     }
-                 }
-             }
-         } catch (\Exception $e) {
-             Log::create([
-                 'level' => 'error',
-                 'message' => $e->getMessage(),
-                 'context' => json_encode([
-                     'file_path' => $this->filePath,
-                     'row' => isset($row) ? $row : null,
-                 ]),
-             ]);
-         }
-     }
-     
+            // تحديد حجم الجزء
+            $chunkSize = 7000; // يمكنك تعديل الحجم وفقًا لحاجتك
+            $chunks = array_chunk($data, $chunkSize);
+
+            foreach ($chunks as $chunkIndex => $chunk) {
+                foreach ($chunk as $index => $row) {
+                    // تجاوز صف الهيدر
+                    if ($index == 0 && $chunk === reset($chunks)) {
+                        continue;
+                    }
+                    // Check if the row contains the expected columns
+                    $birthdate = isset($row['7']) ? $this->parseDate($row['7']) : null;
+
+                    // Check if the user exists
+                    $userId = $row['0'] ?? null;
+                    $user = User::where('id-number', $userId)->first();
+
+                    $userData = $this->prepareUserData($row, $birthdate);
+
+                    if ($user) {
+                        // Filter out null values from the update
+                        $filteredData = array_filter($userData, fn($value) => $value !== null);
+
+                        $user->update($filteredData);
+                    } else {
+                        // Create a new user if not exists
+                        User::create($userData);
+                    }
+
+          
+                }
+            }
+        } catch (\Exception $e) {
+            Log::create([
+                'level' => 'error',
+                'message' => 'Error processing the file: ' . $e->getMessage(),
+                'context' => json_encode([
+                    'file_path' => $this->filePath,
+                    'line' => $e->getLine(),
+                    'file' => $e->getFile(),
+                ]),
+            ]);
+        }
+    }
+
     private function prepareUserData($row, $birthdate)
     {
         return [
-            'id-number' => $row['0'],
-            'name' => $row['1'] !== '' ? $row['1'] : null,
-            'state_id' =>  $this->getStateId($row['2']),
-            'region_id' => $this->getRegionId($row['3']),
-            'phone' => $row['4'] !== '' ? $row['4'] : null,
-            'phone2' => $row['5'] !== '' ? $row['5'] : null,
-            'count_childern' => $row['6'] !== '' ? $row['6'] : null,
+            'id-number' => $row['0'] ?? null,
+            'name' => $row['1'] ?? null,
+            'state_id' => $this->getStateId($row['2'] ?? null),
+            'region_id' => $this->getRegionId($row['3'] ?? null),
+            'phone' => $row['4'] ?? null,
+            'phone2' => $row['5'] ?? null,
+            'count_childern' => $row['6'] ?? null,
             'barh-of-date' => $birthdate,
-            'gender' => $row['8'] !== '' ? $row['8'] : null,
-            'socialst' => $row['9'] !== '' ? $row['9'] : null,
-            'name-wife' => $row['10'] !== '' ? $row['10'] : null,
-            'id-number-wife' => $row['11'] !== '' ? $row['11'] : null,
-            'name-wife2' => $row['12'] !== '' ? $row['12'] : null,
-            'id-number-wife2' => $row['13'] !== '' ? $row['13'] : null,
-            'name-wife3' => $row['14'] !== '' ? $row['14'] : null,
-            'id-number-wife3' => $row['15'] !== '' ? $row['15'] : null,
-            'name-wife4' => $row['16'] !== '' ? $row['16'] : null,
-            'id-number-wife4' => $row['17'] !== '' ? $row['17'] : null,
+            'gender' => $row['8'] ?? null,
+            'socialst' => $row['9'] ?? null,
+            'name-wife' => $row['10'] ?? null,
+            'id-number-wife' => $row['11'] ?? null,
+            'name-wife2' => $row['12'] ?? null,
+            'id-number-wife2' => $row['13'] ?? null,
+            'name-wife3' => $row['14'] ?? null,
+            'id-number-wife3' => $row['15'] ?? null,
+            'name-wife4' => $row['16'] ?? null,
+            'id-number-wife4' => $row['17'] ?? null,
         ];
     }
 
-
-    // تحليل التاريخ من تنسيقات متعددة
+    // Analyze date from multiple formats
     private function parseDate($dateString)
     {
         $dateFormats = ['d/m/Y', 'Y-m-d', 'Y/m/d'];
@@ -127,17 +124,17 @@ class ImportExcelJob implements ShouldQueue
     private function getRegionId($name)
     {
         if (empty($name)) {
-            return null; // إذا كان الاسم فارغًا، أعد قيمة null
+            return null; // Return null if the name is empty
         }
 
-        // البحث عن المنطقة باستخدام الاسم
+        // Search for the region by name
         $region = Region::where('name', $name)->first();
 
-        // إذا كانت المنطقة موجودة، إرجاع معرفها
+        // Return the ID if the region exists
         if ($region) {
             return $region->id;
         } else {
-            // إنشاء منطقة جديدة وإرجاع معرفها
+            // Create a new region and return its ID
             $newRegion = Region::create(['name' => $name]);
             return $newRegion->id;
         }
@@ -146,17 +143,17 @@ class ImportExcelJob implements ShouldQueue
     private function getStateId($name)
     {
         if (empty($name)) {
-            return null; // إذا كان الاسم فارغًا، أعد قيمة null
+            return null; // Return null if the name is empty
         }
 
-        // البحث عن المنطقة باستخدام الاسم
+        // Search for the state by name
         $state = State::where('name', $name)->first();
 
         if ($state) {
             return $state->id;
         } else {
-            $newstate = State::create(['name' => $name]);
-            return $newstate->id;
+            $newState = State::create(['name' => $name]);
+            return $newState->id;
         }
     }
 }
