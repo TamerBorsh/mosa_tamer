@@ -119,8 +119,8 @@ class ImportExcelJob implements ShouldQueue
                         $user = User::where('id-number', $row[0])->first();
 
                         if ($user) {
-                            $institutionName = $row[6]; // Assuming institution name is in column 7 (index 6)
-                            $locationName = $row[5]; // Assuming location name is in column 6 (index 5)
+                            $institutionName = $row[6];
+                            $locationName = $row[5];
 
                             $userData = $this->prepareUserData($row, $user->id, $locationName, $institutionName);
 
@@ -186,41 +186,25 @@ class ImportExcelJob implements ShouldQueue
         if (empty($name)) {
             return null;
         }
-    
+
         $locationId = $this->getLocationId($locationName);
         $institutionId = $this->getInstitutionId($institutionName);
-    
+
         // البحث عن الكوبون بناءً على الاسم
-        $coupon = Coupon::where('name', $name)->first();
-    
+        $coupon = Coupon::where('name', $name)->where('location_id', $locationId)->where('institution_id', $institutionId)->first();
+
         if ($coupon) {
-            // تحقق من تطابق location_id و institution_id
-            $currentLocationId = $coupon->location_id;
-            $currentInstitutionId = $coupon->institution_id;
-    
-            // إذا كانت القيم مختلفة، أنشئ كوبون جديد
-            if ($currentLocationId != $locationId || $currentInstitutionId != $institutionId) {
-                $newCoupon = Coupon::create([
-                    'institution_id' => $institutionId,
-                    'location_id' => $locationId,
-                    'admin_id' => $this->adminId,
-                    'name' => $name,
-                ]);
-                return $newCoupon->id;
-            }
-    
-            // إذا كانت القيم متطابقة، أعد استخدام الكوبون الحالي
             return $coupon->id;
         } else {
             // إنشاء كوبون جديد إذا لم يكن هناك كوبون موجود
             if ($locationId === null) {
                 throw new \Exception('Location name is required to create a new coupon.');
             }
-    
+
             if ($institutionId === null) {
                 throw new \Exception('Institution name is required to create a new coupon.');
             }
-    
+
             $newCoupon = Coupon::create([
                 'institution_id' => $institutionId,
                 'location_id' => $locationId,
@@ -230,7 +214,7 @@ class ImportExcelJob implements ShouldQueue
             return $newCoupon->id;
         }
     }
-    
+
     private function getLocationId($name)
     {
         if (empty($name)) {
