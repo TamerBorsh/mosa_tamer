@@ -109,8 +109,6 @@ class ImportExcelJob implements ShouldQueue
             $chunks = array_chunk($data, $chunkSize);
 
             foreach ($chunks as $chunkIndex => $chunk) {
-                Log::info("Starting chunk " . ($chunkIndex + 1) . " out of " . count($chunks));
-
                 foreach ($chunk as $index => $row) {
                     // تجاوز صف الهيدر
                     if ($index == 0 && $chunk === reset($chunks)) {
