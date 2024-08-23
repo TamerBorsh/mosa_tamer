@@ -115,6 +115,20 @@ class ImportExcelJob implements ShouldQueue
                         continue;
                     }
 
+                    // التأكد من أن الحقول الضرورية تحتوي على بيانات
+                    if (empty($row[1]) || empty($row[5]) || empty($row[6])) {
+                        // تسجيل رسالة خطأ إذا كانت البيانات غير مكتملة
+                        Log::create([
+                            'level' => 'error',
+                            'message' => 'Incomplete data: Coupon name, location name, or institution name is missing.',
+                            'context' => json_encode([
+                                'file_path' => $this->filePath,
+                                'row' => $row,
+                            ]),
+                        ]);
+                        continue; // الانتقال إلى الصف التالي
+                    }
+
                     if ($row[2] != null) {
                         $user = User::where('id-number', $row[0])->first();
 
@@ -183,7 +197,7 @@ class ImportExcelJob implements ShouldQueue
 
     private function getCouponId($name, $locationName, $institutionName)
     {
-        if (empty($name) || empty($locationName)|| empty($institutionName)) {
+        if (empty($name) || empty($locationName) || empty($institutionName)) {
             return null;
         }
 
