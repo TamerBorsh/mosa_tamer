@@ -40,7 +40,7 @@ class ImportExcelJob implements ShouldQueue
             $data = $sheet->toArray();
 
             // Define the chunk size
-            $chunkSize = 2000; // Adjust the chunk size as needed
+            $chunkSize = 7000; // Adjust the chunk size as needed
             $chunks = array_chunk($data, $chunkSize);
 
             foreach ($chunks as $chunk) {

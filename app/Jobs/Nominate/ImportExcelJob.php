@@ -187,34 +187,37 @@ class ImportExcelJob implements ShouldQueue
         if (empty($name)) {
             return null;
         }
-
-        $coupon = Coupon::where('name', $name)->first();
-
+    
         $locationId = $this->getLocationId($locationName);
         $institutionId = $this->getInstitutionId($institutionName);
-
+    
+        $coupon = Coupon::where('name', $name)->first();
+    
         if ($coupon) {
-            $updateData = [];
-            if ($locationId !== null && $coupon->location_id != $locationId) {
-                $updateData['location_id'] = $locationId;
+            // تحقق من تطابق location_id و institution_id
+            if ($coupon->location_id != $locationId || $coupon->institution_id != $institutionId) {
+                // إذا كانت القيم مختلفة، أنشئ كوبون جديد
+                $newCoupon = Coupon::create([
+                    'institution_id' => $institutionId,
+                    'location_id' => $locationId,
+                    'admin_id' => $this->adminId,
+                    'name' => $name,
+                ]);
+                return $newCoupon->id;
             }
-            if ($institutionId !== null && $coupon->institution_id != $institutionId) {
-                $updateData['institution_id'] = $institutionId;
-            }
-            if (!empty($updateData)) {
-                $coupon->update($updateData);
-            }
-
+    
+            // إذا كانت القيم متطابقة، أعد استخدام الكوبون الحالي
             return $coupon->id;
         } else {
+            // إنشاء كوبون جديد إذا لم يكن هناك كوبون موجود
             if ($locationId === null) {
                 throw new \Exception('Location name is required to create a new coupon.');
             }
-
+    
             if ($institutionId === null) {
                 throw new \Exception('Institution name is required to create a new coupon.');
             }
-
+    
             $newCoupon = Coupon::create([
                 'institution_id' => $institutionId,
                 'location_id' => $locationId,
@@ -224,6 +227,7 @@ class ImportExcelJob implements ShouldQueue
             return $newCoupon->id;
         }
     }
+    
 
 
     private function getLocationId($name)
