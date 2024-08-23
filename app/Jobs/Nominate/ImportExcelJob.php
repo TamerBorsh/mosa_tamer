@@ -95,6 +95,7 @@ class ImportExcelJob implements ShouldQueue
     //         ]);
     //     }
     // }
+
     public function handle(): void
     {
         try {
@@ -103,35 +104,45 @@ class ImportExcelJob implements ShouldQueue
             $sheet = $spreadsheet->getActiveSheet();
             $data = $sheet->toArray();
 
-            foreach ($data as $index => $row) {
-                // تجاوز صف الهيدر
-                if ($index == 0) {
-                    continue;
-                }
+            // تحديد حجم الجزء
+            $chunkSize = 5000; // يمكنك تعديل الحجم وفقًا لحاجتك
+            $chunks = array_chunk($data, $chunkSize);
 
-                if ($row[2] != null) {
-                    $user = User::where('id-number', $row[0])->first();
+            foreach ($chunks as $chunkIndex => $chunk) {
+                Log::info("Starting chunk " . ($chunkIndex + 1) . " out of " . count($chunks));
 
-                    if ($user) {
-                        $institutionName = $row[6]; // Assuming institution name is in column 7 (index 6)
-                        $locationName = $row[5]; // Assuming location name is in column 6 (index 5)
+                foreach ($chunk as $index => $row) {
+                    // تجاوز صف الهيدر
+                    if ($index == 0 && $chunk === reset($chunks)) {
+                        continue;
+                    }
 
-                        $userData = $this->prepareUserData($row, $user->id, $locationName, $institutionName);
+                    if ($row[2] != null) {
+                        $user = User::where('id-number', $row[0])->first();
 
-                        // إنشاء سجل باستخدام create بدلاً من insert
-                        Nominate::create($userData);
-                    } else {
-                        // تسجيل خطأ إذا لم يتم العثور على المستخدم
-                        Log::create([
-                            'level' => 'error',
-                            'message' => 'User not found for id-number: ' . $row[0],
-                            'context' => json_encode([
-                                'file_path' => $this->filePath,
-                                'row' => $row,
-                            ]),
-                        ]);
+                        if ($user) {
+                            $institutionName = $row[6]; // Assuming institution name is in column 7 (index 6)
+                            $locationName = $row[5]; // Assuming location name is in column 6 (index 5)
+
+                            $userData = $this->prepareUserData($row, $user->id, $locationName, $institutionName);
+
+                            // إنشاء سجل باستخدام create بدلاً من insert
+                            Nominate::create($userData);
+                        } else {
+                            // تسجيل خطأ إذا لم يتم العثور على المستخدم
+                            Log::create([
+                                'level' => 'error',
+                                'message' => 'User not found for id-number: ' . $row[0],
+                                'context' => json_encode([
+                                    'file_path' => $this->filePath,
+                                    'row' => $row,
+                                ]),
+                            ]);
+                        }
                     }
                 }
+
+                Log::info("Finished chunk " . ($chunkIndex + 1));
             }
         } catch (\Exception $e) {
             Log::create([
@@ -144,6 +155,21 @@ class ImportExcelJob implements ShouldQueue
                 ]),
             ]);
         }
+    }
+
+
+    private function prepareUserData($row, $userId, $locationName, $institutionName)
+    {
+        $couponId = $this->getCouponId($row[1], $locationName, $institutionName);
+
+        return [
+            'coupon_id'     => $couponId,
+            'user_id'       => $userId,
+            'admin_id'      => $this->adminId,
+            'recive_date'   => $this->parseDate($row[2]),
+            'redirect_date' => $this->parseDate($row[3]),
+            'is_recive'     => $row[4],
+        ];
     }
 
     // تحليل التاريخ من تنسيقات متعددة
@@ -160,20 +186,6 @@ class ImportExcelJob implements ShouldQueue
         return null;
     }
 
-    private function prepareUserData($row, $userId, $locationName, $institutionName)
-    {
-        $couponId = $this->getCouponId($row[1], $locationName, $institutionName);
-
-        return [
-            'coupon_id'     => $couponId,
-            'user_id'       => $userId,
-            'admin_id'      => $this->adminId,
-            'recive_date'   => $this->parseDate($row[2]),
-            'redirect_date' => $this->parseDate($row[3]),
-            'is_recive'     => $row[4],
-        ];
-    }
-
     private function getCouponId($name, $locationName, $institutionName)
     {
         if (empty($name)) {
@@ -182,12 +194,25 @@ class ImportExcelJob implements ShouldQueue
 
         $coupon = Coupon::where('name', $name)->first();
 
+        $locationId = $this->getLocationId($locationName);
+        $institutionId = $this->getInstitutionId($institutionName);
+
         if ($coupon) {
+            // تحديث الموقع أو المؤسسة إذا كانت مختلفة
+            $updateData = [];
+            if ($coupon->location_id != $locationId) {
+                $updateData['location_id'] = $locationId;
+            }
+            if ($coupon->institution_id != $institutionId) {
+                $updateData['institution_id'] = $institutionId;
+            }
+            if (!empty($updateData)) {
+                $coupon->update($updateData);
+            }
+
             return $coupon->id;
         } else {
-            $locationId = $this->getLocationId($locationName);
-            $institutionId = $this->getInstitutionId($institutionName);
-
+            // إنشاء كابون جديد إذا لم يتم العثور على كابون موجود
             if (is_null($locationId)) {
                 throw new \Exception('Location name is required to create a new coupon.');
             }
@@ -205,6 +230,7 @@ class ImportExcelJob implements ShouldQueue
             return $newCoupon->id;
         }
     }
+
 
     private function getLocationId($name)
     {

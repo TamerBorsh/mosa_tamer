@@ -2,7 +2,6 @@
 
 namespace App\Jobs\User;
 
-use App\Models\Location;
 use App\Models\Log;
 use App\Models\Region;
 use App\Models\State;
@@ -35,31 +34,41 @@ class ImportExcelJob implements ShouldQueue
     public function handle(): void
     {
         try {
-            // تحميل الملف باستخدام PhpSpreadsheet
+            // Load the spreadsheet using PhpSpreadsheet
             $spreadsheet = IOFactory::load($this->filePath);
             $sheet = $spreadsheet->getActiveSheet();
             $data = $sheet->toArray();
 
-            foreach ($data as $index => $row) {
-                // تجاوز صف الهيدر
-                if ($index == 0) {
-                    continue;
-                }
+            // Define the chunk size
+            $chunkSize = 5000; // Adjust the chunk size as needed
+            $chunks = array_chunk($data, $chunkSize);
 
-                // محاولة تحليل تاريخ الميلاد باستخدام تنسيقات متعددة
-                $birthdate = $this->parseDate($row['7']);
+            foreach ($chunks as $chunk) {
+                foreach ($chunk as $index => $row) {
+                    // Skip the header row
+                    if ($index == 0 && $chunk === reset($chunks)) {
+                        continue;
+                    }
 
-                // التحقق من وجود المستخدم
-                $user = User::where('id-number', $row[0])->first();
+                    // Attempt to parse the birth date with multiple formats
+                    $birthdate = $this->parseDate($row['7']);
 
-                $userData = $this->prepareUserData($row, $birthdate);
+                    // Check if the user exists
+                    $user = User::where('id-number', $row[0])->first();
 
-                if ($user) {
-                    // تحديث المستخدم إذا كان موجودًا
-                    $user->update($userData);
-                } else {
-                    // إنشاء مستخدم جديد إذا لم يكن موجودًا
-                    User::create($userData);
+                    $userData = $this->prepareUserData($row, $birthdate);
+
+                    if ($user) {
+                        // Filter out null values from the update
+                        $filteredData = array_filter($userData, function ($value) {
+                            return $value !== null;
+                        });
+
+                        $user->update($filteredData);
+                    } else {
+                        // Create a new user if not exists
+                        User::create($userData);
+                    }
                 }
             }
         } catch (\Exception $e) {
@@ -68,11 +77,36 @@ class ImportExcelJob implements ShouldQueue
                 'message' => $e->getMessage(),
                 'context' => json_encode([
                     'file_path' => $this->filePath,
-                    'row' => $row,
+                    'row' => isset($row) ? $row : null,
                 ]),
             ]);
         }
     }
+
+    private function prepareUserData($row, $birthdate)
+    {
+        return [
+            'id-number' => $row['0'],
+            'name' => $row['1'] !== '' ? $row['1'] : null,
+            'state_id' =>  $this->getStateId($row['2']),
+            'region_id' => $this->getRegionId($row['3']),
+            'phone' => $row['4'] !== '' ? $row['4'] : null,
+            'phone2' => $row['5'] !== '' ? $row['5'] : null,
+            'count_childern' => $row['6'] !== '' ? $row['6'] : null,
+            'barh-of-date' => $birthdate,
+            'gender' => $row['8'] !== '' ? $row['8'] : null,
+            'socialst' => $row['9'] !== '' ? $row['9'] : null,
+            'name-wife' => $row['10'] !== '' ? $row['10'] : null,
+            'id-number-wife' => $row['11'] !== '' ? $row['11'] : null,
+            'name-wife2' => $row['12'] !== '' ? $row['12'] : null,
+            'id-number-wife2' => $row['13'] !== '' ? $row['13'] : null,
+            'name-wife3' => $row['14'] !== '' ? $row['14'] : null,
+            'id-number-wife3' => $row['15'] !== '' ? $row['15'] : null,
+            'name-wife4' => $row['16'] !== '' ? $row['16'] : null,
+            'id-number-wife4' => $row['17'] !== '' ? $row['17'] : null,
+        ];
+    }
+
 
     // تحليل التاريخ من تنسيقات متعددة
     private function parseDate($dateString)
@@ -86,46 +120,6 @@ class ImportExcelJob implements ShouldQueue
             }
         }
         return null;
-    }
-
-    private function prepareUserData($row, $birthdate)
-    {
-        return [
-            'id-number' => $row['0'],
-            'name' => $row['1'] ?? null,
-            'state_id' =>  $this->getStateId($row['2']),
-            'region_id' => $this->getRegionId($row['3']),
-            'phone' => $this->getRegionId($row['4']),
-            'phone2' => $this->getRegionId($row['5']),
-            'count_childern' => $row[6] ?? null,
-            'barh-of-date' => $birthdate,
-            'gender' => $row['8'] ?? null,
-            'socialst' => $row['9'] ?? null,
-            'name-wife' => $row['10'] ?? null,
-            'id-number-wife' => $row['11'] ?? null,
-            'name-wife2' => $row['12'] ?? null,
-            'id-number-wife2' => $row['13'] ?? null,
-            'name-wife3' => $row['14'] ?? null,
-            'id-number-wife3' => $row['15'] ?? null,
-            'name-wife4' => $row['16'] ?? null,
-            'id-number-wife4' => $row['17'] ?? null,
-        ];
-    }
-
-    private function getlocationId($name)
-    {
-        if (empty($name)) {
-            return null; // إذا كان الاسم فارغًا، أعد قيمة null
-        }
-
-        $location = Location::where('name', $name)->first();
-
-        if ($location) {
-            return $location->id;
-        } else {
-            $newLocation = Location::create(['name' => $name]);
-            return $newLocation->id;
-        }
     }
 
     private function getRegionId($name)
