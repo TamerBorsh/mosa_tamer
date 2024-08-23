@@ -141,8 +141,6 @@ class ImportExcelJob implements ShouldQueue
                         }
                     }
                 }
-
-                Log::info("Finished chunk " . ($chunkIndex + 1));
             }
         } catch (\Exception $e) {
             Log::create([
