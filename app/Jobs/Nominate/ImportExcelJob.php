@@ -105,7 +105,7 @@ class ImportExcelJob implements ShouldQueue
             $data = $sheet->toArray();
 
             // تحديد حجم الجزء
-            $chunkSize = 5000; // يمكنك تعديل الحجم وفقًا لحاجتك
+            $chunkSize = 7000; // يمكنك تعديل الحجم وفقًا لحاجتك
             $chunks = array_chunk($data, $chunkSize);
 
             foreach ($chunks as $chunkIndex => $chunk) {
@@ -153,7 +153,6 @@ class ImportExcelJob implements ShouldQueue
         }
     }
 
-
     private function prepareUserData($row, $userId, $locationName, $institutionName)
     {
         $couponId = $this->getCouponId($row[1], $locationName, $institutionName);
@@ -191,12 +190,16 @@ class ImportExcelJob implements ShouldQueue
         $locationId = $this->getLocationId($locationName);
         $institutionId = $this->getInstitutionId($institutionName);
     
+        // البحث عن الكوبون بناءً على الاسم
         $coupon = Coupon::where('name', $name)->first();
     
         if ($coupon) {
             // تحقق من تطابق location_id و institution_id
-            if ($coupon->location_id != $locationId || $coupon->institution_id != $institutionId) {
-                // إذا كانت القيم مختلفة، أنشئ كوبون جديد
+            $currentLocationId = $coupon->location_id;
+            $currentInstitutionId = $coupon->institution_id;
+    
+            // إذا كانت القيم مختلفة، أنشئ كوبون جديد
+            if ($currentLocationId != $locationId || $currentInstitutionId != $institutionId) {
                 $newCoupon = Coupon::create([
                     'institution_id' => $institutionId,
                     'location_id' => $locationId,
@@ -228,8 +231,6 @@ class ImportExcelJob implements ShouldQueue
         }
     }
     
-
-
     private function getLocationId($name)
     {
         if (empty($name)) {

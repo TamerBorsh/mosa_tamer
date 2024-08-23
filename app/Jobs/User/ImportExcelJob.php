@@ -31,58 +31,60 @@ class ImportExcelJob implements ShouldQueue
      * Execute the job.
      */
 
-    public function handle(): void
-    {
-        try {
-            // Load the spreadsheet using PhpSpreadsheet
-            $spreadsheet = IOFactory::load($this->filePath);
-            $sheet = $spreadsheet->getActiveSheet();
-            $data = $sheet->toArray();
-
-            // Define the chunk size
-            $chunkSize = 7000; // Adjust the chunk size as needed
-            $chunks = array_chunk($data, $chunkSize);
-
-            foreach ($chunks as $chunk) {
-                foreach ($chunk as $index => $row) {
-                    // Skip the header row
-                    if ($index == 0 && $chunk === reset($chunks)) {
-                        continue;
-                    }
-
-                    // Attempt to parse the birth date with multiple formats
-                    $birthdate = $this->parseDate($row['7']);
-
-                    // Check if the user exists
-                    $user = User::where('id-number', $row[0])->first();
-
-                    $userData = $this->prepareUserData($row, $birthdate);
-
-                    if ($user) {
-                        // Filter out null values from the update
-                        $filteredData = array_filter($userData, function ($value) {
-                            return $value !== null;
-                        });
-
-                        $user->update($filteredData);
-                    } else {
-                        // Create a new user if not exists
-                        User::create($userData);
-                    }
-                }
-            }
-        } catch (\Exception $e) {
-            Log::create([
-                'level' => 'error',
-                'message' => $e->getMessage(),
-                'context' => json_encode([
-                    'file_path' => $this->filePath,
-                    'row' => isset($row) ? $row : null,
-                ]),
-            ]);
-        }
-    }
-
+     public function handle(): void
+     {
+         try {
+             // Use PhpSpreadsheet Reader
+             $reader = IOFactory::createReaderForFile($this->filePath);
+             $reader->setReadDataOnly(true); // Only read data
+             $spreadsheet = $reader->load($this->filePath);
+             $sheet = $spreadsheet->getActiveSheet();
+             $data = $sheet->toArray(null, true, true, true); // Read data with keys
+     
+             // Define the chunk size
+             $chunkSize = 7000;
+             $chunks = array_chunk($data, $chunkSize);
+     
+             foreach ($chunks as $chunk) {
+                 foreach ($chunk as $index => $row) {
+                     // Skip the header row
+                     if ($index === 1) {
+                         continue;
+                     }
+     
+                     // Attempt to parse the birth date with multiple formats
+                     $birthdate = $this->parseDate($row['7']);
+     
+                     // Check if the user exists
+                     $user = User::where('id-number', $row['0'])->first();
+     
+                     $userData = $this->prepareUserData($row, $birthdate);
+     
+                     if ($user) {
+                         // Filter out null values from the update
+                         $filteredData = array_filter($userData, function ($value) {
+                             return $value !== null;
+                         });
+     
+                         $user->update($filteredData);
+                     } else {
+                         // Create a new user if not exists
+                         User::create($userData);
+                     }
+                 }
+             }
+         } catch (\Exception $e) {
+             Log::create([
+                 'level' => 'error',
+                 'message' => $e->getMessage(),
+                 'context' => json_encode([
+                     'file_path' => $this->filePath,
+                     'row' => isset($row) ? $row : null,
+                 ]),
+             ]);
+         }
+     }
+     
     private function prepareUserData($row, $birthdate)
     {
         return [
