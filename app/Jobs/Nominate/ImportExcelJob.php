@@ -183,7 +183,7 @@ class ImportExcelJob implements ShouldQueue
 
     private function getCouponId($name, $locationName, $institutionName)
     {
-        if (empty($name)) {
+        if (empty($name) || empty($locationName)|| empty($institutionName)) {
             return null;
         }
 
@@ -196,15 +196,6 @@ class ImportExcelJob implements ShouldQueue
         if ($coupon) {
             return $coupon->id;
         } else {
-            // إنشاء كوبون جديد إذا لم يكن هناك كوبون موجود
-            if ($locationId === null) {
-                throw new \Exception('Location name is required to create a new coupon.');
-            }
-
-            if ($institutionId === null) {
-                throw new \Exception('Institution name is required to create a new coupon.');
-            }
-
             $newCoupon = Coupon::create([
                 'institution_id' => $institutionId,
                 'location_id' => $locationId,
