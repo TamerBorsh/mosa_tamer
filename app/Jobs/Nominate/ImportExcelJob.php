@@ -95,7 +95,6 @@ class ImportExcelJob implements ShouldQueue
     //         ]);
     //     }
     // }
-
     public function handle(): void
     {
         try {
@@ -129,17 +128,40 @@ class ImportExcelJob implements ShouldQueue
                         continue; // الانتقال إلى الصف التالي
                     }
 
-                    if ($row[2] != null) {
+                    if (!empty($row[2])) {
                         $user = User::where('id-number', $row[0])->first();
 
                         if ($user) {
                             $institutionName = $row[6];
                             $locationName = $row[5];
+                            $couponName = $row[1];
+                            $receiveDate = $this->parseDate($row[2]);
+                            $redirectDate = $this->parseDate($row[3]);
 
-                            $userData = $this->prepareUserData($row, $user->id, $locationName, $institutionName);
+                            $couponId = $this->getCouponId($couponName, $locationName, $institutionName);
 
-                            // إنشاء سجل باستخدام create بدلاً من insert
-                            Nominate::create($userData);
+                            $userData = [
+                                'coupon_id'     => $couponId,
+                                'user_id'       => $user->id,
+                                'admin_id'      => $this->adminId,
+                                'recive_date'   => $receiveDate,
+                                'redirect_date' => $redirectDate,
+                                'is_recive'     => $row[4],
+                            ];
+
+                            // تحقق من وجود سجل الترشيح
+                            $nominate = Nominate::where('user_id', $user->id)
+                                ->where('coupon_id', $couponId)
+                                ->where('recive_date', $receiveDate)
+                                ->first();
+
+                            if ($nominate) {
+                                // تحديث السجل الموجود
+                                $nominate->update($userData);
+                            } else {
+                                // إنشاء سجل جديد إذا لم يكن موجودًا
+                                Nominate::create($userData);
+                            }
                         } else {
                             // تسجيل خطأ إذا لم يتم العثور على المستخدم
                             Log::create([
@@ -205,7 +227,10 @@ class ImportExcelJob implements ShouldQueue
         $institutionId = $this->getInstitutionId($institutionName);
 
         // البحث عن الكوبون بناءً على الاسم
-        $coupon = Coupon::where('name', $name)->where('location_id', $locationId)->where('institution_id', $institutionId)->first();
+        $coupon = Coupon::where('name', $name)
+            ->where('location_id', $locationId)
+            ->where('institution_id', $institutionId)
+            ->first();
 
         if ($coupon) {
             return $coupon->id;
