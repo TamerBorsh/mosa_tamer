@@ -38,7 +38,7 @@ class DashController extends Controller
         ]);
     }
 
-    public function ChartCopon()
+    public function ChartNominates()
     {
         $entries = Nominate::whereYear('recive_date', date('Y'))
             ->select(

@@ -20,18 +20,12 @@ use Illuminate\Support\Facades\Route;
 // Auth Route
 require_once (__DIR__) . '/auth.php';
 
-Route::get('optimize', function () {
-    \Artisan::call('optimize:clear');
-    // \Artisan::call('migrate --seed');
-    // dd("done");
-});
-
 
 Route::group(['middleware' => 'auth:admin', 'prefix' => 'dash'], function () {
 
     Route::controller(DashController::class)->group(function () {
         Route::get('/',                         'index')->name('dash.index');
-        Route::get('/chart-copons',             'ChartCopon')->name('dash.ChartRecive');
+        Route::get('/chart-nominates',             'ChartNominates')->name('dash.ChartRecive');
         Route::get('/chart-locations',          'ChartLocation')->name('dash.ChartLocation');
     });
 
@@ -72,10 +66,10 @@ Route::group(['middleware' => 'auth:admin', 'prefix' => 'dash'], function () {
         Route::get('/copons-export-excel',      'ExportEcel')->name('nominates.ExportEcel');
     });
     Route::controller(ImportNominateController::class)->prefix('nominates')->group(function () {
-        Route::get('/import-excel',             'importExcelForm')->name('nominates.importExcelForm');
-        Route::post('/import-excel_file',       'import')->name('nominates.ImportEcel');
+        Route::get('update/import',             'importExcelForm')->name('nominates.importExcelForm');
+        Route::post('update/is_recive',       'StoreImportEcel')->name('nominates.StoreImportEcel');
 
-        Route::get('/import',             'importFormNominates')->name('nominates.importFormNominatesForm');
+        Route::get('/import',             'importFormNominates')->name('nominates.importNominatesForm');
         Route::post('/import-excel_file',       'importExcel')->name('nominates.importFormNominates');
     });
 

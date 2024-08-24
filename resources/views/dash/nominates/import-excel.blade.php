@@ -13,7 +13,7 @@
         <br>1 : تعني مرشح<span class="px-1"></span> 2 : تعني مطبوع<span class="px-1"></span> 3 : تعني مستلم<span class="px-1"></span> 4 : تعني غير مستلم
     </span>
 
-    <form action="{{ route('nominates.ImportEcel') }}" method="post" enctype="multipart/form-data">
+    <form action="{{ route('nominates.StoreImportEcel') }}" method="post" enctype="multipart/form-data">
         @csrf
         @method('post')
         <div class="form-group mt-2">

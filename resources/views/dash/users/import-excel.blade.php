@@ -1,20 +1,25 @@
 @extends('dash.layouts.app')
 @section('content')
+<style>
+    h3.text-center {
+        font-family: 'JazeeraFont' !important;
+    }
+</style>
 <div class="col-md-6 offset-md-3">
-    <h3 class="text-center py-4">Import Excel File</h3>
+    <h3 class="text-center">استيراد بيانات مستفيدين</h3>
+    <div class="d-flex justify-content-center align-items-center">
+        <span class="py-2 text-center">
+            يجب تنزيل الملف التالي وتعبئة البيانات حسب ترتيب إكسل.
+            <br><a href="/users.xlsx">اضغط هنا للتنزيل</a>
+        </span>
+    </div>
     <form action="{{ route('users.ImportEcel') }}" method="post" enctype="multipart/form-data">
         @csrf
         @method('post')
         <div class="form-group">
-            <label for="excel_file">Choose Excel File:</label>
+            <label for="excel_file">اختر ملف Excel:</label>
             <input type="file" name="excel_file" id="excel_file" class="form-control">
         </div>
-        <!-- <fieldset class="form-group">
-            <div class="custom-file">
-                <input type="file" class="custom-file-input" id="excel_file_id">
-                <label class="custom-file-label" for="excel_file_id" name="excel_file">Choose Excel File</label>
-            </div>
-        </fieldset> -->
         <button type="submit" class="btn btn-primary">Upload</button>
     </form>
     @if (session('success'))

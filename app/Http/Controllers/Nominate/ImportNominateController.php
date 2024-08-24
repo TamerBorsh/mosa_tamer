@@ -16,7 +16,7 @@ class ImportNominateController extends Controller
     }
 
     //Update refresh status
-    public function import(Request $request)
+    public function StoreImportEcel(Request $request)
     {
         // التحقق من وجود الملف في الطلب
         if ($request->hasFile('excel_file')) {

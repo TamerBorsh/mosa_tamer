@@ -2,7 +2,6 @@
 
 
 @section('content')
-<!-- Revenue, Hit Rate & Deals -->
 <div class="row">
     <div class="col-xl-3 col-lg-6 col-12">
         <div class="card pull-up">
@@ -85,8 +84,17 @@
         </div>
     </div>
 </div>
-<!--/ Revenue, Hit Rate & Deals -->
 <div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-content collapse show">
+                <div class="card-body">
+                    <div class="card-title">البركسات والمخازن</div>
+                    <canvas id="ChartLocation" class="chartjs-render-monitor"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-md-4 col-sm-12">
         <div class="card">
             <div class="card-content collapse show">
@@ -97,17 +105,6 @@
             </div>
         </div>
     </div>
-    <div class="col-md-8 col-sm-12">
-        <div class="card">
-            <div class="card-content collapse show">
-                <div class="card-body">
-                    <div class="card-title">البركسات والمخازن</div>
-                    <canvas id="ChartLocation" class="chartjs-render-monitor"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-    
 </div>
 
 @endsection
@@ -123,9 +120,6 @@
     fetchAndRenderChart("{{ route('dash.ChartLocation') }}", "ChartLocation", "bar");
 
     // fetchAndRenderChart("{{ route('dash.ChartLocation') }}", "ChartLocation", "radar");
-
-    
-
 </script>
 
 @endpush

@@ -34,15 +34,14 @@
                 <ul class="menu-content">
                     <li><a class="menu-item" href="{{route('nominates.index')}}"><i></i><span>عرض الكل</span></a>
                     </li>
-                    <li><a class="menu-item" href="{{route('nominates.importExcelForm')}}"><i></i><span>استيراد Excel</span></a>
+                    <li><a class="menu-item" href="{{route('nominates.importExcelForm')}}"><i></i><span>تحديث حالة المستفيد Excel</span></a>
                     </li>
-                    <li><a class="menu-item" href="{{route('nominates.importFormNominatesForm')}}"><i></i><span>استيراد ملف ترشيح</span></a>
+                    <li><a class="menu-item" href="{{route('nominates.importNominatesForm')}}"><i></i><span>استيراد ملف ترشيح</span></a>
                     </li>
                 </ul>
             </li>
             <li class=" nav-item"><a href="{{route('auth.logout')}}"><i class="la la-undo"></i><span class="menu-title" data-i18n="Hospital">تسجيل الخروج</span></a>
             </li>
-
         </ul>
     </div>
 </div>

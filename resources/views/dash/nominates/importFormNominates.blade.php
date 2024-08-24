@@ -6,12 +6,15 @@
     }
 </style>
 <div class="col-md-6 offset-md-3">
-    <h3 class="text-center py-1">استيراد ملف اكسل لتحديث حالة المستفيد
-    </h3><span class="pb-3">
-        قبل رفع الملف تأكد العمود A يحتوي على رقم الكابون والعمود B يحتوي على حالة المستفيد
+    <h3 class="text-center py-1">استيراد ملف اكسل لترشيح أسماء مستفيدين بشكل مباشر
+    </h3>
+    <div class="d-flex justify-content-center align-items-center">
+        <span class="py-2 text-center">
+            يجب تنزيل الملف التالي وتعبئة البيانات حسب ترتيب إكسل.
+            <br><a href="/nominates.xlsx">اضغط هنا للتنزيل</a>
+        </span>
+    </div>
 
-        <br>1 : تعني مرشح<span class="px-1"></span> 2 : تعني مطبوع<span class="px-1"></span> 3 : تعني مستلم<span class="px-1"></span> 4 : تعني غير مستلم
-    </span>
 
     <form action="{{ route('nominates.importFormNominates') }}" method="post" enctype="multipart/form-data">
         @csrf

@@ -78,7 +78,7 @@
 
 <!-- BEGIN: Body-->
 
-<body class="vertical-layout vertical-menu-modern 2-columns menu-expanded   fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
+<body class="vertical-layout vertical-menu-modern 2-columns fixed-navbar menu-collapsed" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
 <!-- collapsed -->
     <!-- BEGIN: Header-->
     @include('dash.layouts.nav')
@@ -99,7 +99,7 @@
     <div class="drag-target"></div>
 
     <!-- BEGIN: Footer-->
-    <footer class="footer footer-static footer-light navbar-border navbar-shadow">
+    <footer class="footer footer-static footer-light navbar-border navbar-shadow ">
         <p class="clearfix blue-grey lighten-2 text-sm-center mb-0 px-2"><span class="float-md-left d-block d-md-inline-block">الحقوق محفوظة &copy; 2024 <a class="text-bold-800 grey darken-2" href="#" target="_blank">وزارة التنيمة الاجتماعية - غزة</a></span><span class="float-md-right d-none d-lg-block">...<span id="scroll-top"></span></span></p>
     </footer>
     <!-- END: Footer-->
@@ -119,6 +119,29 @@
     <script src="/js/sweetalert2.min.js" defer></script>
     <script src="/datatables-bs5/datatables-bootstrap5.js" defer></script>
     @stack('script')
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const body = document.body;
+        const navToggle = document.querySelector('.nav-toggle');
+
+        // استرجاع حالة القائمة من localStorage وتطبيقها على <body>
+        const isMenuCollapsed = localStorage.getItem('menu-collapsed');
+
+        // إذا كانت قيمة القائمة محفوظة في localStorage، قم بتطبيقها
+        if (isMenuCollapsed === 'false') {
+            body.classList.remove('menu-collapsed');
+        }
+
+        // إضافة مستمع للضغط على زر القائمة
+        navToggle.addEventListener('click', function() {
+            // التبديل بين إضافة/إزالة الكلاس "menu-collapsed"
+            body.classList.toggle('menu-collapsed');
+
+            // تحديث الحالة في localStorage بناءً على وجود الكلاس
+            localStorage.setItem('menu-collapsed', body.classList.contains('menu-collapsed'));
+        });
+    });
+</script>
 </body>
 <!-- END: Body-->
 </html>
