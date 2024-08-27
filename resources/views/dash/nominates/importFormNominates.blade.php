@@ -14,8 +14,6 @@
             <br><a href="/nominates.xlsx">اضغط هنا للتنزيل</a>
         </span>
     </div>
-
-
     <form action="{{ route('nominates.importFormNominates') }}" method="post" enctype="multipart/form-data">
         @csrf
         @method('post')

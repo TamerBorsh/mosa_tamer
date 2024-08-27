@@ -111,6 +111,7 @@
 </section>
 @endsection()
 @push('script')
+<script src="/datatables-bs5/datatables-bootstrap5.js" defer></script>
 {!! $dataTable->scripts() !!}
 <script>
     // Save Data

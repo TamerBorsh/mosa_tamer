@@ -56,7 +56,28 @@ function fetchAndRenderChart(route, idElement, chartType) {
             });
         });
 }
+// ==============================================
+document.addEventListener("DOMContentLoaded", function() {
+    const body = document.body;
+    const navToggle = document.querySelector('.nav-toggle');
 
+    // استرجاع حالة القائمة من localStorage وتطبيقها على <body>
+    const isMenuCollapsed = localStorage.getItem('menu-collapsed');
+
+    // إذا كانت قيمة القائمة محفوظة في localStorage، قم بتطبيقها
+    if (isMenuCollapsed === 'false') {
+        body.classList.remove('menu-collapsed');
+    }
+
+    // إضافة مستمع للضغط على زر القائمة
+    navToggle.addEventListener('click', function() {
+        // التبديل بين إضافة/إزالة الكلاس "menu-collapsed"
+        body.classList.toggle('menu-collapsed');
+
+        // تحديث الحالة في localStorage بناءً على وجود الكلاس
+        localStorage.setItem('menu-collapsed', body.classList.contains('menu-collapsed'));
+    });
+});
 // ==============================================
 // Save Data
 function addData(method, storeUrl, formData, formId, reload) {

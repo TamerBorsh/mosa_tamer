@@ -178,6 +178,7 @@
 </section>
 @endsection()
 @push('script')
+<script src="/datatables-bs5/datatables-bootstrap5.js" defer></script>
 {!! $dataTable->scripts() !!}
 <script>
     // Click on "Check All" 
@@ -189,62 +190,6 @@
         }
     });
     // =====
-    // Save Check
-    // $('body').on('click', '#refreshFilter', function(e) {
-    //     e.preventDefault();
-    //     var selectedIds = [];
-    //     var table = $('#nominate-table');
-
-    //     table.find('input[type="checkbox"]:checked').each(function() {
-    //         var id = $(this).attr('id').replace('nominate-', '');
-    //         if (id !== 'check-all') { // تأكد من عدم إضافة 'check-all'
-    //             selectedIds.push(id);
-    //         }
-    //     });
-
-    //     if (selectedIds.length > 0) {
-    //         // فتح المودال هنا
-    //         $('#selectionModal').modal('show');
-
-    //         // عند النقر على زر تأكيد داخل المودال
-    //         $('#confirmSelection').off('click').on('click', function() {
-    //             var formData = {
-    //                 selectedIds: selectedIds,
-    //                 is_recive: $('#is_recive').val(),
-    //                 _token: '{{ csrf_token() }}'
-    //             };
-
-    //             $.ajax({
-    //                 type: 'POST',
-    //                 url: "{{ route('nominates.refreshStatus') }}",
-    //                 data: formData,
-    //                 success: function(response) {
-    //                     $('#nominate-table').DataTable().ajax.reload();
-    //                     showMessage({
-    //                         icon: 'success',
-    //                         title: 'تم تحديث الحالة بنجاح '
-    //                     });
-    //                     // إعادة تعيين النموذج
-    //                     $('#selectionModal').find('form')[0].reset();
-    //                     $('#selectionModal').modal('hide');
-    //                 },
-    //                 error: function(xhr) {
-    //                     // تحسين إدارة الأخطاء
-    //                     var errorMessage = xhr.responseJSON && xhr.responseJSON.message ?
-    //                         xhr.responseJSON.message :
-    //                         'حدث خطأ أثناء العملية. حاول مرة أخرى.';
-    //                     alert(errorMessage);
-    //                     $('#selectionModal').modal('hide');
-    //                 }
-    //             });
-    //         });
-    //     } else {
-    //         showMessage({
-    //             icon: 'error',
-    //             title: 'لتحديث حالة الترشيح يرجى اختيار المرشحين اولا'
-    //         });
-    //     }
-    // });
     $('body').on('click', '#refreshFilter', function(e) {
         e.preventDefault();
 
