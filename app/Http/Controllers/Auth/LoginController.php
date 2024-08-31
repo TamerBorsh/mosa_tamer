@@ -30,20 +30,27 @@ class LoginController extends Controller
         $rememberMe = $request->boolean('remember_me'); // تحويل القيمة إلى Boolean بشكل مباشر
 
 
-        // Determine the login field based on the input
-        // if (filter_var($loginField, FILTER_VALIDATE_EMAIL)) {
-        //     $loginType = 'email';
-        // } elseif (ctype_digit($loginField)) {
-        //     $loginType = 'phone';
-        // } else {
-        //     $loginType = 'username';
-        // }
         // تحديد نوع تسجيل الدخول بناءً على المدخلات
-        $loginType = filter_var($loginField, FILTER_VALIDATE_EMAIL) ? 'email' : (ctype_digit($loginField) ? 'phone' : 'username');
+        if (filter_var($loginField, FILTER_VALIDATE_EMAIL)) {
+            $loginType = 'email';
+        } elseif (ctype_digit($loginField)) {
+            // التحقق مما إذا كان المدخل رقماً
+            if (strlen($loginField) === 9) { // يمكنك تعديل العدد وفقًا لطول رقم الهوية
+                $loginType = 'id-number';
+            } else {
+                $loginType = 'phone';
+            }
+        } else {
+            $loginType = 'username';
+        }
+
+
+        // تحديد نوع تسجيل الدخول بناءً على المدخلات
+        // $loginType = filter_var($loginField, FILTER_VALIDATE_EMAIL) ? 'email' : (ctype_digit($loginField) ? 'phone' : 'username');
         // return $loginType;
 
         // التحقق من صحة الـ guard
-        if (!in_array($guard, ['admin'])) {
+        if (!in_array($guard, ['admin', 'web'])) {
             return response()->json(['message' => __('Guard غير صحيح.')], Response::HTTP_BAD_REQUEST);
         }
 
@@ -60,42 +67,11 @@ class LoginController extends Controller
 
         // إرجاع رسالة خطأ إذا فشل التوثيق
         return response()->json(['message' => __('البيانات المدخلة غير صحيحة.')], Response::HTTP_BAD_REQUEST);
-    
+
 
         // return Auth::guard($request->post('guard'))->attempt($credentials, $request->input('remember_me')) ? $request->session()->regenerate() : response()->json(['message' => __('The data entered is incorrect')], Response::HTTP_BAD_REQUEST);
     }
-    public function authenticate33(LoginRequest $request)
-    {
-        // الحصول على بيانات المدخلات
-        $loginField = $request->input('login_type');
-        $password = $request->input('password');
-        $guard = $request->input('guard');
-        $rememberMe = $request->boolean('remember_me'); // تحويل القيمة إلى Boolean بشكل مباشر
 
-        // تحديد نوع تسجيل الدخول بناءً على المدخلات
-        $loginType = filter_var($loginField, FILTER_VALIDATE_EMAIL) ? 'email' : (ctype_digit($loginField) ? 'phone' : 'username');
-
-        // إنشاء مصفوفة بيانات الاعتماد للتوثيق
-        $credentials = [
-            $loginType => $loginField,
-            'password' => $password,
-        ];
-
-        // التحقق من صحة الـ guard
-        if (!in_array($guard, ['api', 'web'])) {
-            return response()->json(['message' => __('Guard غير صحيح.')], Response::HTTP_BAD_REQUEST);
-        }
-
-        // محاولة التوثيق وتجديد الجلسة إذا نجحت
-        if (Auth::guard($guard)->attempt($credentials, $rememberMe)) {
-            $request->session()->regenerate();
-            return response()->json(['message' => __('تم تسجيل الدخول بنجاح.')], Response::HTTP_OK);
-        }
-
-        // إرجاع رسالة خطأ إذا فشل التوثيق
-        return response()->json(['message' => __('البيانات المدخلة غير صحيحة.')], Response::HTTP_BAD_REQUEST);
-    
-    }
 
 
     public function logout(Request $request)

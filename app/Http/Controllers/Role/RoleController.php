@@ -44,8 +44,7 @@ class RoleController extends Controller
     {
         $permissions = Permission::whereGuard_name('admin')->whereNull('parent_id')->get();
         $role = $role::whereId($role->id)->with('permissions')->first();
-
-        // return $permissions;
+// return $permissions;
         return response()->view('dash.roles.role-permissions', ['role' => $role, 'permissions' => $permissions]);
     }
 

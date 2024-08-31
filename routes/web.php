@@ -12,6 +12,7 @@ use App\Http\Controllers\Nominate\ImportNominateController;
 use App\Http\Controllers\Nominate\NominateController;
 use App\Http\Controllers\Region\RegionController;
 use App\Http\Controllers\Role\RoleController;
+use App\Http\Controllers\Role\RolePermissionController;
 use App\Http\Controllers\User\ExportUserController;
 use App\Http\Controllers\User\ImportUserController;
 use App\Http\Controllers\User\UserController;
@@ -20,14 +21,15 @@ use Illuminate\Support\Facades\Route;
 // Auth Route
 require_once (__DIR__) . '/auth.php';
 
-
-Route::group(['middleware' => 'auth:admin', 'prefix' => 'dash'], function () {
-
+Route::group(['middleware' => 'auth:admin,web', 'prefix' => 'dash'], function () {
     Route::controller(DashController::class)->group(function () {
         Route::get('/',                         'index')->name('dash.index');
         Route::get('/chart-nominates',             'ChartNominates')->name('dash.ChartRecive');
         Route::get('/chart-locations',          'ChartLocation')->name('dash.ChartLocation');
     });
+});
+
+Route::group(['middleware' => 'auth:admin', 'prefix' => 'dash'], function () {
 
     Route::controller(UserController::class)->prefix('users')->group(function () {
         Route::get('/get-detalies/{id}',        'detalies');
@@ -46,6 +48,8 @@ Route::group(['middleware' => 'auth:admin', 'prefix' => 'dash'], function () {
     Route::controller(RoleController::class)->prefix('roles')->group(function () {
         Route::post('/update-data',             'updateData')->name('roles.updateData');
     });
+    Route::put('roles/{role}/permissions',          [RolePermissionController::class, 'update'])->name('RolePermission.update');
+
     Route::controller(LocationController::class)->prefix('locations')->group(function () {
         Route::post('/update-data',             'update')->name('locations.updateData');
     });
@@ -68,7 +72,6 @@ Route::group(['middleware' => 'auth:admin', 'prefix' => 'dash'], function () {
     Route::controller(ImportNominateController::class)->prefix('nominates')->group(function () {
         Route::get('update/import',             'importExcelForm')->name('nominates.importExcelForm');
         Route::post('update/is_recive',       'StoreImportEcel')->name('nominates.StoreImportEcel');
-
         Route::get('/import',             'importFormNominates')->name('nominates.importNominatesForm');
         Route::post('/import-excel_file',       'importExcel')->name('nominates.importFormNominates');
     });

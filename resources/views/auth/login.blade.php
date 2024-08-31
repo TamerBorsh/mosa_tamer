@@ -6,7 +6,7 @@
             <div class="card border-grey border-lighten-3 px-1 py-1 m-0">
                 <div class="card-header border-0">
                     <div class="card-title text-center">
-                        <img src="/logo.png" alt="branding logo"  height="200px"><br>
+                        <img src="/logo.png" alt="branding logo" height="200px"><br>
                         <h2 class="pt-1" style=" font-family: 'JazeeraFont' !important; font-weight: 700; ">وزارة التنمية الاجتماعية</h2>
                     </div>
                 </div>
@@ -14,7 +14,6 @@
                     <p class="card-subtitle line-on-side text-muted text-center font-small-3 mx-2 my-1"><span>سجل دخولك للمتابعة</span></p>
                     <div class="card-body">
                         <form class="form-horizontal" id="login" novalidate>
-                            
                             <input type="hidden" name="guard" value="{{ $guard }}">
                             <fieldset class="form-group position-relative has-icon-left">
                                 <input type="text" class="form-control" id="user-name" name="login_type" placeholder="اليوزرنيم أو رقم الموبايل" required>
@@ -34,6 +33,9 @@
                                         <input type="checkbox" id="remember-me" class="chk-remember">
                                         <label for="remember-me"> تذكرني</label>
                                     </fieldset>
+                                </div>
+                                <div class="col-sm-6 col-12 text-right">
+                                    <a href="{{route('auth.reset-password')}}">نسيت كلمة المرور</a>
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-outline-info btn-block"><i class="ft-unlock"></i> دخول</button>
@@ -71,7 +73,6 @@
                     Object.values(error.response.data.errors)[0][0] : error.response.data.message;
                 toastr.error(message);
             });
-
     });
 </script>
 @endpush

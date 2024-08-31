@@ -178,8 +178,11 @@
 </section>
 @endsection()
 @push('script')
-<script src="/datatables-bs5/datatables-bootstrap5.js" defer></script>
-{!! $dataTable->scripts() !!}
+<!-- <script src="/datatables-bs5/datatables-bootstrap5.js" defer></script> -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+{{ $dataTable->scripts(attributes: ['type' => 'module']) }}
 <script>
     // Save Data
     $("#addDataForm").on('submit', function(e) {

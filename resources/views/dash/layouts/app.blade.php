@@ -14,7 +14,8 @@
     <link rel="stylesheet" type="text/css" href="/css/toastr.css">
     <link rel="stylesheet" href="/css/sweetalert2.min.css" />
     <link rel="stylesheet" href="/datatables-bs5/main.css" /> @yield('stylesheet') 
-    <style>@font-face{font-family: 'JazeeraFont'; src: url('/fonts/ar.otf') format('opentype');}body, .card-body h6, li.nav-item, h4, h3.brand-text, h2#swal2-title, h5#selectionModalLabel{font-family: 'JazeeraFont' !important;}div#user-table_filter, div.dataTables_wrapper div.dataTables_filter{float: left; text-align: left !important;}table{width: 100% !important;}li.nav-item.dropdown{list-style: none;}a.nav-link.dropdown-toggle{padding: 0;}.dropdown-toggle::after{display: none;}</style>
+    <style>@font-face{font-family: 'JazeeraFont'; src: url('/fonts/ar.otf') format('opentype');}body, .card-body h6, li.nav-item, h4, h3.brand-text, h2#swal2-title, h5#selectionModalLabel{font-family: 'JazeeraFont' !important;}div#user-table_filter, div.dataTables_wrapper div.dataTables_filter{float: left; text-align: left !important;}table{width: 100% !important;}li.nav-item.dropdown{list-style: none;}a.nav-link.dropdown-toggle{padding: 0;}.dropdown-toggle::after{display: none;}input[type="search"] {
+    border: 1px solid #ddd;}</style>
 </head>
 <body class="vertical-layout vertical-menu-modern 2-columns fixed-navbar menu-collapsed" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns"> @include('dash.layouts.nav') @include('dash.layouts.menu') <div class="app-content content">
         <div class="content-overlay"></div>

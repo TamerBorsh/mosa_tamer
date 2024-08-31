@@ -5,17 +5,23 @@ namespace App\Http\Controllers\Admin;
 use App\DataTables\AdminDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Policies\AdminPolicy;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
     public function index(AdminDataTable $datatable)
     {
+        $this->authorize('viewAny', Admin::class);
         $roles = Role::whereGuard_name('admin')->get(['id', 'name']);
         return $datatable->render('dash.admins.index', ['roles' => $roles]);
     }
