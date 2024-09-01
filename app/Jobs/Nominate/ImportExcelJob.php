@@ -104,7 +104,7 @@ class ImportExcelJob implements ShouldQueue
             $data = $sheet->toArray();
 
             // تحديد حجم الجزء
-            $chunkSize = 7000; // يمكنك تعديل الحجم وفقًا لحاجتك
+            $chunkSize = 5000; // يمكنك تعديل الحجم وفقًا لحاجتك
             $chunks = array_chunk($data, $chunkSize);
 
             foreach ($chunks as $chunkIndex => $chunk) {
@@ -206,6 +206,39 @@ class ImportExcelJob implements ShouldQueue
     // تحليل التاريخ من تنسيقات متعددة
     private function parseDate($dateString)
     {
+        // النمط الذي يحتوي على تاريخ ووقت (صباحاً/مساءً/ظهراً مع "الساعة" أو "س")
+        $patternWithTime = '/\w+\s(\d{1,2}\/\d{1,2}\/\d{4})\s(?:الساعة|س)\s(\d{1,2})\s(صباحاً|مساءً|ظهراً)/u';
+        if (preg_match($patternWithTime, $dateString, $matches)) {
+            $datePart = $matches[1]; // التاريخ
+            $timePart = $matches[2]; // الساعة
+            $period = $matches[3];   // الفترة (صباحاً/مساءً/ظهراً)
+
+            // تحويل الوقت إلى صيغة 24 ساعة
+            if ($period === 'مساءً' && $timePart < 12) {
+                $timePart += 12;
+            } elseif ($period === 'ظهراً' && $timePart < 12) {
+                $timePart += 12;
+            } elseif ($period === 'صباحاً' && $timePart == 12) {
+                $timePart = 0;
+            }
+
+            // دمج التاريخ والوقت
+            $dateTimeString = $datePart . ' ' . $timePart . ':00:00';
+
+            // استخدام Carbon لتحليل التاريخ والوقت
+            return Carbon::createFromFormat('d/m/Y H:i:s', $dateTimeString)->format('Y-m-d H:i:s');
+        }
+
+        // النمط الذي يحتوي على تاريخ فقط
+        $patternWithDateOnly = '/\w+\s(\d{1,2}\/\d{1,2}\/\d{4})/u';
+        if (preg_match($patternWithDateOnly, $dateString, $matches)) {
+            $datePart = $matches[1]; // التاريخ
+
+            // استخدام Carbon لتحليل التاريخ
+            return Carbon::createFromFormat('d/m/Y', $datePart)->format('Y-m-d');
+        }
+
+        // التعامل مع الأنماط الأخرى المحتملة
         $dateFormats = ['d/m/Y', 'Y-m-d', 'Y/m/d'];
         foreach ($dateFormats as $format) {
             try {
@@ -214,6 +247,7 @@ class ImportExcelJob implements ShouldQueue
                 continue;
             }
         }
+
         return null;
     }
 
