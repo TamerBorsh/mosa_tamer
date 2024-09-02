@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -18,6 +19,7 @@ class User extends Authenticatable
     protected $connection = 'mysql';
 
     protected $guarded = [];
+
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = Hash::make($value);
@@ -99,11 +101,11 @@ class User extends Authenticatable
         return $this->hasMany(UserSystem::class, 'user_id');
     }
     // ================================================
-      // العلاقة مع المؤسسة
-      public function institution()
-      {
-          return $this->belongsTo(Institution::class);
-      }
+    // العلاقة مع المؤسسة
+    public function institution()
+    {
+        return $this->belongsTo(Institution::class);
+    }
     // ================================================
 
     public function wife()
@@ -113,7 +115,7 @@ class User extends Authenticatable
 
     public function wifeCopons()
     {
-        return $this->hasManyThrough(Copon::class, User::class, 'id-number-wife', 'user_id', 'id', 'id');
+        return $this->hasManyThrough(Coupon::class, User::class, 'id-number-wife', 'user_id', 'id', 'id');
     }
     // ================================================
     // ================================================
@@ -155,20 +157,26 @@ class User extends Authenticatable
         });
 
         $builder->when($filters['count_childern'] ?? null, function ($builder, $value) {
-            $builder->where('count_childern', $value);
+            $builder->where('count_childern', '>=', $value);
         });
 
+        // $builder->when($filters['month'] ?? null, function ($builder, $value) {
+        //     $builder->whereHas('nominates', function ($q) use ($value) {
+        //         $q->where(Carbon::parse($this->recive_date)->month, $value);
+        //     });
+        // });
+
         $builder->when($filters['min_count'] ?? null, function ($builder, $value) {
-            $builder->whereHas('copons', function ($q) use ($value) {
-                $q->select('user_id') // Assuming 'user_id' is the foreign key in 'copons' table
+            $builder->whereHas('nominates', function ($q) use ($value) {
+                $q->select('user_id')
                     ->groupBy('user_id')
                     ->havingRaw('COUNT(*) <= ?', [$value]);
             });
         });
 
         $builder->when($filters['max_count'] ?? null, function ($builder, $value) {
-            $builder->whereHas('copons', function ($q) use ($value) {
-                $q->select('user_id') // Assuming 'user_id' is the foreign key in 'copons' table
+            $builder->whereHas('nominates', function ($q) use ($value) {
+                $q->select('user_id')
                     ->groupBy('user_id')
                     ->havingRaw('COUNT(*) >= ?', [$value]);
             });

@@ -74,7 +74,8 @@ class UserDataTable extends DataTable
                     '</div>',
                 'data' => 'check',
                 'orderable' => false,
-                'searchable' => false
+                'searchable' => false,
+                'width' => '10px'
             ],
 
             // ['title' => '#', 'data' =>   'DT_RowIndex', 'orderable' => false, 'searchable' => false],
@@ -82,7 +83,7 @@ class UserDataTable extends DataTable
             ['title' => "الاسم", 'data' =>   'name'],
             ['title' => "المنطقة", 'data' =>   'region_id'],
             ['title' => "تاريخ الميلاد", 'data' =>   'barh-of-date'],
-            ['title' => "عدد الأفراد", 'data' =>   'count_childern'],
+            ['title' => "عدد الأفراد", 'data' =>   'count_childern', 'width' => '10px'],
             ['title' => "الحالة", 'data' =>   'is_active', 'searchable' => false],
             ['title' => "التعديل أو الحذف", 'data' => 'action', 'orderable' => false, 'searchable' => false]
         ];

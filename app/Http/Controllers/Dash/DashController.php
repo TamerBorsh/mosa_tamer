@@ -6,36 +6,49 @@ use App\Http\Controllers\Controller;
 use App\Models\Nominate;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class DashController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index(): Response
     {
-        // الحصول على عدد الأعضاء الإجماليين
-        $usersCount = User::count();
+        if (Auth::guard('admin')->check() && Auth::guard('admin')->user()->hasPermissionTo('Read-Admins')) {
+            // الحصول على عدد الأعضاء الإجماليين
+            $usersCount = User::count();
 
-        // الحصول على عدد الأعضاء الذين تم إنشاؤهم في الشهر الحالي
-        $usersInCurrentMonthCount = User::whereHas('nominates', function ($query) {
-            $query->whereMonth('recive_date', Carbon::now()->month);
-            //   ->where('is_recive', '3');
-        })->count();
+            // الحصول على عدد الأعضاء الذين تم إنشاؤهم في الشهر الحالي
+            $usersInCurrentMonthCount = User::whereHas('nominates', function ($query) {
+                $query->whereMonth('recive_date', Carbon::now()->month);
+                //   ->where('is_recive', '3');
+            })->count();
 
 
-        // الحصول على عدد الأعضاء الذين لم يتم إنشاؤهم في الشهر الحالي
-        $usersNotInCurrentMonthCount = User::whereDoesntHave('nominates', function ($query) {
-            $query->whereMonth('recive_date',  Carbon::now()->month);
-        })->count();
+            // الحصول على عدد الأعضاء الذين لم يتم إنشاؤهم في الشهر الحالي
+            $usersNotInCurrentMonthCount = User::whereDoesntHave('nominates', function ($query) {
+                $query->whereMonth('recive_date',  Carbon::now()->month);
+            })->count();
 
-        $userInActive = User::whereIs_active('0')->count();
+            $userInActive = User::whereIs_active('0')->count();
 
-        return response()->view('dash.index', [
-            'users' => $usersCount,
-            'usersInCurrentMonthCount'  => $usersInCurrentMonthCount,
-            'usersNotInCurrentMonth'    => $usersNotInCurrentMonthCount,
-            'userInActive'              => $userInActive
-        ]);
+            return response()->view('dash.index', [
+                'users' => $usersCount,
+                'usersInCurrentMonthCount'  => $usersInCurrentMonthCount,
+                'usersNotInCurrentMonth'    => $usersNotInCurrentMonthCount,
+                'userInActive'              => $userInActive
+            ]);
+        } else {
+            return abort(403, 'لا يوجد لديك صلاحيات');
+        }
+
+        if (Auth::guard('web')->check() && Auth::guard('web')->user()->hasPermissionTo('Read-Admins')) {
+            
+        } else {
+        }
     }
 
     public function ChartNominates()

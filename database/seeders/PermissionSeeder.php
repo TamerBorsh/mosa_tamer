@@ -31,5 +31,8 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'Delete-Copon', 'name_ar' => 'حذف ترشيح', 'guard_name' => 'admin']);
         //==============================
 
+        Permission::create(['name' => 'update-profile', 'name_ar' => 'تحديث معلومات', 'guard_name' => 'web']);
+        // Permission::create(['name' => '', 'name_ar' => '', 'guard_name' => 'web']);
+        //==============================
     }
 }

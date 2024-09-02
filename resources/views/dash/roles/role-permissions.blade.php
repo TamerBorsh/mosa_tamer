@@ -34,7 +34,7 @@
     }
 
     .custom-control-label {
-        margin-left: 5px;
+        margin-left: 8px;
     }
 </style>
 @endsection
@@ -85,47 +85,68 @@
 @endsection
 @push('script')
 <script>
-
-    
     function update(roleId, permissionId) {
         axios.put("{{ url('/') }}" + '/dash/roles/' + roleId + '/permissions', {
             permission_id: permissionId,
         }).then(function(response) {
-            Swal.fire({
+            //   console.log(response);
+            var Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
+            Toast.fire({
                 icon: 'success',
-                title: response.data.message,
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000
-            });
+                title: response.data.message
+            })
         }).catch(function(error) {
-            Swal.fire({
-                icon: 'error',
-                title: error.response.data.message || 'An error occurred',
+            // console.log(error);
+            var Toast = Swal.mixin({
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,
                 timer: 3000
             });
-        });
+            Toast.fire({
+                icon: 'success',
+                title: error.response.data.message
+            })
+        })
     }
 
-    document.querySelectorAll(".selectAll").forEach(function(element) {
-        element.addEventListener('change', function() {
-            let isChecked = this.checked;
-            document.querySelectorAll('.selectItems_' + this.dataset.id).forEach(function(childCheckbox) {
-                childCheckbox.checked = isChecked;
-                // Update for each child checkbox
-                update('{{ $role->id }}', childCheckbox.id);
-            });
+    $(".selectAll").click(function() {
+            $('.selectItems_' + $(this).data('id')).prop("checked", $(this).prop("checked"));
         });
-    });
 
-    document.querySelectorAll(".custom-control-input:not(.selectAll)").forEach(function(element) {
-        element.addEventListener('change', function() {
-            update('{{ $role->id }}', this.id);
-        });
-    });
+    // Handle change for selectAll checkbox
+    // document.querySelectorAll(".selectAll").forEach(function(element) {
+    //     element.addEventListener('change', function() {
+    //         let isChecked = this.checked;
+    //         let childIds = [];
+
+    //         // Collect all child permissions' IDs
+    //         document.querySelectorAll('.selectItems_' + this.dataset.id).forEach(function(childCheckbox) {
+    //             childCheckbox.checked = isChecked;
+    //             childIds.push(childCheckbox.id);
+    //         });
+
+    //         // Include the parent permission ID as well
+    //         childIds.push(this.dataset.id);
+
+    //         // Send one update request for all selected permissions
+    //         update('{{ $role->id }}', childIds);
+    //     });
+    // });
+
+    // Handle change for individual child checkboxes
+    // document.querySelectorAll(".custom-control-input:not(.selectAll)").forEach(function(element) {
+    //     element.addEventListener('change', function() {
+    //         // Send update request only for this single permission
+    //         update('{{ $role->id }}', [this.id]);
+    //     });
+    // });
 </script>
+
+
 @endpush

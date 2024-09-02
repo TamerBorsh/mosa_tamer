@@ -28,6 +28,10 @@
         transition: .4s;
     }
 
+    button#storeNominate {
+        color: #fff;
+    }
+
     .slider:before {
         position: absolute;
         content: "";
@@ -163,7 +167,7 @@
                                     <div class="col-12 col-sm-6 col-lg-3">
                                         <div class="form-group validate">
                                             <div class="controls">
-                                                <label>الشهر</label>
+                                                <label>شهر تسليم الكابون</label>
                                                 <input type="text" class="form-control" name="month" value="{{ request('month') }}">
                                                 <div class="help-block"></div>
                                             </div>
@@ -172,7 +176,7 @@
                                     <div class="col-12 col-sm-6 col-lg-3">
                                         <div class="form-group validate">
                                             <div class="controls">
-                                                <label>أقل عدد استلام</label>
+                                                <label>عدد مرات الاستلام أو أقل</label>
                                                 <input type="text" class="form-control" name="min_count" value="{{ request('min_count') }}">
                                                 <div class="help-block"></div>
                                             </div>
@@ -181,7 +185,7 @@
                                     <div class="col-12 col-sm-6 col-lg-3">
                                         <div class="form-group validate">
                                             <div class="controls">
-                                                <label>أكثر عدد استلام</label>
+                                                <label>عدد مرات الاستلام أو أكثر</label>
                                                 <input type="text" class="form-control" name="max_count" value="{{ request('max_count') }}">
                                                 <div class="help-block"></div>
                                             </div>
@@ -225,7 +229,7 @@
                                 <div class="col-sm-12">
                                     <div class="table-responsive">
                                         {!! $dataTable->table([
-                                        'class' => 'table dataTable',
+                                        'class' => 'table table-bordered table-striped dataTable no-footer',
                                         ]) !!}
                                     </div>
                                 </div>
@@ -439,7 +443,31 @@
     </div>
     <!-- ========================================== -->
     <!-- Modal -->
-    <div class="modal fade" id="selectionModal" tabindex="-1" role="dialog" aria-labelledby="selectionModalLabel" aria-hidden="true"> <div class="modal-dialog modal-md" role="document"> <div class="modal-content"> <div class="modal-header"> <h5 class="modal-title" id="selectionModalLabel">تأكيد الاختيار</h5> <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button> </div><div class="modal-body"> <form id="selectionForm"> <div class="row"> <div class="col-md-12"> <div class="form-group"> <label for="coupon_id">اختر الكابون</label> <select id="coupon_id" name="coupon_id" class="form-control" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-title="Priority" data-original-title="" title=""> @foreach ($coupons as $coupon) <option value="{{$coupon->id}}">{{$coupon->name}}</option> @endforeach </select> </div></div><div class="col-md-6"> <div class="form-group"> <label for="recive_date">تاريخ استلام الكابون</label> <input type="date" id="recive_date" class="form-control" name="recive_date" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-title="تاريخ الاستلام" data-original-title="" title=""> </div></div><div class="col-md-6"> <div class="form-group"> <label for="redirect_date">تاريخ ترشيح المستفيد</label> <input type="date" id="redirect_date" class="form-control" name="redirect_date" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-title="تاريخ الترشيح" data-original-title="" title=""> </div></div></div></form> </div><div class="modal-footer"> <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button> <button type="button" class="btn btn-primary" id="confirmSelection">تأكيد</button> </div></div></div></div>
+    <div class="modal fade" id="selectionModal" tabindex="-1" role="dialog" aria-labelledby="selectionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="selectionModalLabel">تأكيد الاختيار</h5> <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+                </div>
+                <div class="modal-body">
+                    <form id="selectionForm">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group"> <label for="coupon_id">اختر الكابون</label> <select id="coupon_id" name="coupon_id" class="form-control" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-title="Priority" data-original-title="" title=""> @foreach ($coupons as $coupon) <option value="{{$coupon->id}}">{{$coupon->name}}</option> @endforeach </select> </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group"> <label for="recive_date">تاريخ استلام الكابون</label> <input type="date" id="recive_date" class="form-control" name="recive_date" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-title="تاريخ الاستلام" data-original-title="" title=""> </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group"> <label for="redirect_date">تاريخ ترشيح المستفيد</label> <input type="date" id="redirect_date" class="form-control" name="redirect_date" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-title="تاريخ الترشيح" data-original-title="" title=""> </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer"> <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button> <button type="button" class="btn btn-primary" id="confirmSelection">تأكيد</button> </div>
+            </div>
+        </div>
+    </div>
     <!-- ========================================== -->
 </section>
 
