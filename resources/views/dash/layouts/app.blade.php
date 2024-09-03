@@ -61,6 +61,24 @@
         table.dataTable tbody>tr>.selected {
             background-color: #1e9ff2;
         }
+
+        .dataTables_info {
+            display: inline;
+            margin: 10px 0 !important;
+
+        }
+        .dataTables_paginate {
+            text-align: center;
+            display: inline;
+            float: inline-end;
+            margin: 10px 0 !important;
+        }
+        .dataTables_paginate a {
+            color: #1e9ff2;
+            margin: 3px !important;
+            padding: 2px 6px 1px !important;
+            border: 1px solid #edeeef;
+        }
     </style>
 </head>
 

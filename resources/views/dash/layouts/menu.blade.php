@@ -42,6 +42,8 @@
             </li>
             <li class=" nav-item"><a href="{{route('auth.logout')}}"><i class="la la-undo"></i><span class="menu-title" data-i18n="Hospital">تسجيل الخروج</span></a>
             </li>
+            <li class=" nav-item"><a href="{{route('logs.index')}}"><i class="la la-undo"></i><span class="menu-title" data-i18n="Hospital">أخطاء النظام</span></a>
+            </li>
         </ul>
     </div>
 </div>

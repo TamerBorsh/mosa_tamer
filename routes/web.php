@@ -6,6 +6,7 @@ use App\Http\Controllers\Dash\DashController;
 use App\Http\Controllers\Front\FrontController;
 use App\Http\Controllers\Institution\InstitutionController;
 use App\Http\Controllers\Location\LocationController;
+use App\Http\Controllers\Log\LogController;
 use App\Http\Controllers\Mosque\MosqueController;
 use App\Http\Controllers\Nominate\ExportNominateController;
 use App\Http\Controllers\Nominate\ImportNominateController;
@@ -86,6 +87,8 @@ Route::group(['middleware' => 'auth:admin', 'prefix' => 'dash'], function () {
         'locations'         => LocationController::class,
         'institutions'      => InstitutionController::class,
         'nominates'         => NominateController::class,
+        'logs'              => LogController::class,
+
     ]);
 });
 

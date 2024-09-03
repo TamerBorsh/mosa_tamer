@@ -67,6 +67,8 @@
         border-radius: 50%;
     }
 </style>
+<script src="/datatables-bs5/dataTables.min.css"></script>
+
 @endsection
 @section('content')
 <section id="configuration">
@@ -470,10 +472,10 @@
     </div>
     <!-- ========================================== -->
 </section>
-
 @endsection()
 @push('script')
-<script src="/datatables-bs5/datatables-bootstrap5.js" defer></script>
+<script src="/datatables-bs5/dataTables.min.js"></script>
+
 {!! $dataTable->scripts() !!}
 <script>
     $('body').on('click', '#showRow', async function() {
