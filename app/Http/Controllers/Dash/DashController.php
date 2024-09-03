@@ -17,7 +17,7 @@ class DashController extends Controller
 
     public function index(): Response
     {
-        if (Auth::guard('admin')->check() && Auth::guard('admin')->user()->hasPermissionTo('Read-Admins')) {
+        // if (Auth::guard('admin')->check() && Auth::guard('admin')->user()->hasPermissionTo('Read-Admins')) {
             // الحصول على عدد الأعضاء الإجماليين
             $usersCount = User::count();
 
@@ -41,14 +41,14 @@ class DashController extends Controller
                 'usersNotInCurrentMonth'    => $usersNotInCurrentMonthCount,
                 'userInActive'              => $userInActive
             ]);
-        } else {
-            return abort(403, 'لا يوجد لديك صلاحيات');
-        }
+        // } else {
+        //     return abort(403, 'لا يوجد لديك صلاحيات');
+        // }
 
-        if (Auth::guard('web')->check() && Auth::guard('web')->user()->hasPermissionTo('Read-Admins')) {
+        // if (Auth::guard('web')->check() && Auth::guard('web')->user()->hasPermissionTo('Read-Admins')) {
             
-        } else {
-        }
+        // } else {
+        // }
     }
 
     public function ChartNominates()
