@@ -12,10 +12,6 @@
                             <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
                         </ul>
                     </div>
-                    <div class="form-group">
-                        <!-- basic buttons -->
-                        <button type="button" class="btn btn-info btn-min-width mr-1 mb-1" data-toggle="modal" data-backdrop="false" data-target="#add"> <i class="la la-plus-square"></i> أضف جديد</button>
-                    </div>
                 </div>
                 <div class="card-content collapse show">
                     <div class="card-body card-dashboard">
