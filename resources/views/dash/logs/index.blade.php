@@ -1,5 +1,8 @@
 @extends('dash.layouts.app')
-@section('title', 'الموظفين | وزارة التنمية الاجتماعية')
+@section('title', 'الاخطاء | وزارة التنمية الاجتماعية')
+@section('stylesheet')
+<script src="/datatables-bs5/dataTables.min.css"></script>
+@endsection
 @section('content')
 <section id="configuration">
     <div class="row">

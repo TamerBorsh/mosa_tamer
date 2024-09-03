@@ -66,6 +66,9 @@ Route::group(['middleware' => 'auth:admin', 'prefix' => 'dash'], function () {
     });
     Route::controller(NominateController::class)->prefix('nominates')->group(function () {
         Route::post('/refresh-status',          'refreshStatus')->name('nominates.refreshStatus');
+        Route::get('/coupon-redemption',          'couponRedemption')->name('nominates.couponRedemption');
+        Route::post('/search',          'search')->name('nominates.search');
+
     });
     Route::controller(ExportNominateController::class)->prefix('nominates')->group(function () {
         Route::get('/copons-export-excel',      'ExportEcel')->name('nominates.ExportEcel');

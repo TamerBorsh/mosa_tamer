@@ -1,5 +1,8 @@
 @extends('dash.layouts.app')
 @section('title', 'المخازن والبركسات | وزارة التنمية الاجتماعية')
+@section('stylesheet')
+<script src="/datatables-bs5/dataTables.min.css"></script>
+@endsection
 @section('content')
 <section id="configuration">
     <div class="row">
@@ -26,8 +29,8 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="table-responsive">
-                                        {!! $dataTable->table([
-                                        'class' => 'table dataTable text-center',
+                                    {!! $dataTable->table([
+                                        'class' => 'table table-bordered table-striped dataTable no-footer',
                                         ]) !!}
                                     </div>
                                 </div>
@@ -111,7 +114,7 @@
 </section>
 @endsection()
 @push('script')
-<script src="/datatables-bs5/datatables-bootstrap5.js" defer></script>
+<script src="/datatables-bs5/dataTables.min.js"></script>
 {!! $dataTable->scripts() !!}
 <script>
     // Save Data

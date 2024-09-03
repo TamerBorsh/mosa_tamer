@@ -16,7 +16,8 @@
             </li>
             <li class=" nav-item"><a href="{{route('mosques.index')}}"><i class="la la-lock"></i><span class="menu-title">المساجد</span></a>
             </li>
-
+            <li class=" nav-item"><a href="{{route('nominates.couponRedemption')}}"><i class="la la-undo"></i><span class="menu-title" data-i18n="Hospital">صرف الكابون</span></a>
+            </li>
 
             <li class=" nav-item"><a href="javascript:;"><i class="la la-user"></i><span class="menu-title">المستفيدين</span></a>
                 <ul class="menu-content">

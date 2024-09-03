@@ -30,56 +30,6 @@ class ImportExcelJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    // public function handle(): void
-    // {
-    //     try {
-    //         // تحميل الملف باستخدام PhpSpreadsheet
-    //         $spreadsheet = IOFactory::load($this->filePath);
-    //         $sheet = $spreadsheet->getActiveSheet();
-    //         $data = $sheet->toArray();
-
-    //         // تحديد حجم الجزء
-    //         $chunkSize = 5000; // يمكنك تعديل الحجم وفقًا لحاجتك
-    //         $chunks = array_chunk($data, $chunkSize);
-
-    //         foreach ($chunks as $chunkIndex => $chunk) {
-    //             foreach ($chunk as $index => $row) {
-    //                 // تجاوز صف الهيدر
-    //                 if ($index == 0 && $chunk === reset($chunks)) {
-    //                     continue;
-    //                 }
-    //                 // Check if the row contains the expected columns
-    //                 $birthdate = isset($row['7']) ? $this->parseDate($row['7']) : null;
-
-    //                 // Check if the user exists
-    //                 $userId = $row['0'] ?? null;
-    //                 $user = User::where('id-number', $userId)->first();
-
-    //                 $userData = $this->prepareUserData($row, $birthdate);
-
-    //                 if ($user) {
-    //                     // Filter out null values from the update
-    //                     $filteredData = array_filter($userData, fn($value) => $value !== null);
-
-    //                     $user->update($filteredData);
-    //                 } else {
-    //                     // Create a new user if not exists
-    //                     User::insert($userData);
-    //                 }
-    //             }
-    //         }
-    //     } catch (\Exception $e) {
-    //         Log::create([
-    //             'level' => 'error',
-    //             'message' => 'Error processing the file: ' . $e->getMessage(),
-    //             'context' => json_encode([
-    //                 'file_path' => $this->filePath,
-    //                 'line' => $e->getLine(),
-    //                 'file' => $e->getFile(),
-    //             ]),
-    //         ]);
-    //     }
-    // }
     public function handle(): void
     {
         try {
@@ -92,9 +42,9 @@ class ImportExcelJob implements ShouldQueue
             $chunkSize = 5000; // يمكنك تعديل الحجم وفقًا لحاجتك
             $chunks = array_chunk($data, $chunkSize);
 
-            // جلب جميع المستخدمين الموجودين مسبقًا
+            // جلب جميع المعرّفات الموجودة مسبقًا
             $userIds = array_column($data, '0');
-            $existingUsers = User::whereIn('id-number', $userIds)->pluck('id-number', 'id')->toArray();
+            $existingUsers = User::whereIn('id-number', $userIds)->pluck('id-number')->toArray();
 
             foreach ($chunks as $chunkIndex => $chunk) {
                 foreach ($chunk as $index => $row) {
@@ -102,16 +52,19 @@ class ImportExcelJob implements ShouldQueue
                     if ($index == 0 && $chunk === reset($chunks)) {
                         continue;
                     }
+
                     // Check if the row contains the expected columns
                     $birthdate = isset($row['7']) ? $this->parseDate($row['7']) : null;
 
                     // Check if the user exists
                     $userId = $row['0'] ?? null;
+
+                    // Prepare user data
                     $userData = $this->prepareUserData($row, $birthdate);
 
-                    if (isset($existingUsers[$userId])) {
-                        // Filter out null values from the update
-                        $filteredData = array_filter($userData, fn($value) => !is_null($value));
+                    if (in_array($userId, $existingUsers)) {
+                        // Update existing user
+                        $filteredData = array_filter($userData, fn($value) => $value !== null);
                         User::where('id-number', $userId)->update($filteredData);
                     } else {
                         // Create a new user if not exists
@@ -131,6 +84,7 @@ class ImportExcelJob implements ShouldQueue
             ]);
         }
     }
+
 
     private function prepareUserData($row, $birthdate)
     {

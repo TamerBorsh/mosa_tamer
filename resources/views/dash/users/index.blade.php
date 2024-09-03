@@ -1,6 +1,7 @@
 @extends('dash.layouts.app')
 @section('title', 'المستفيدين | وزارة التنمية الاجتماعية')
 @section('stylesheet')
+<script src="/datatables-bs5/dataTables.min.css"></script>
 <style>
     /* Custom styles for the toggle switch */
     .switch {
@@ -67,8 +68,6 @@
         border-radius: 50%;
     }
 </style>
-<script src="/datatables-bs5/dataTables.min.css"></script>
-
 @endsection
 @section('content')
 <section id="configuration">

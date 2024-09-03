@@ -32,10 +32,35 @@ class NominateController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function couponRedemption()
     {
-        //
+        return response()->view('dash.nominates.coupon_redemption');
     }
+
+    public function search(Request $request)
+    {
+        $number = $request->input('number');
+
+        // البحث في نموذج Nominate مع تحميل بيانات المستخدم
+        $results = Nominate::with(['user:id,id-number,name,phone,barh-of-date']) // تحديث اسم العمود هنا
+            ->whereIn('is_recive', [1, 2]) // الشرط الأساسي: إما 1 أو 2
+            ->where(function ($query) use ($number) {
+                $query->where('number_copon', $number)
+                    ->orWhereHas('user', function ($query) use ($number) {
+                        $query->where('id-number', $number);
+                    });
+            })
+            ->get();
+
+        // التحقق من وجود نتائج
+        if ($results->isEmpty()) {
+            return response()->json(['message' => 'لا توجد نتائج مطابقة'], 404);
+        }
+
+        return response()->json($results);
+    }
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -107,7 +132,7 @@ class NominateController extends Controller
         // التحقق من أن $ids هو مصفوفة غير فارغة
         if (!empty($ids) && is_array($ids) && !is_null($isRecive)) {
             foreach ($ids as $item) {
-                if (is_numeric($item)) { // تأكد من أن $item هو رقم صحيح
+                if (is_numeric($item)) {
                     $nominate = Nominate::find($item);
                     if ($nominate) {
                         $nominate->update([

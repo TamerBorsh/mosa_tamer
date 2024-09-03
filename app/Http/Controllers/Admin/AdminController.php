@@ -19,7 +19,7 @@ class AdminController extends Controller
      */
     public function index(AdminDataTable $datatable)
     {
-        $this->authorize('viewAny', Admin::class);
+        // $this->authorize('viewAny', Admin::class);
         $roles = Role::whereGuard_name('admin')->get(['id', 'name']);
         return $datatable->render('dash.admins.index', ['roles' => $roles]);
     }
