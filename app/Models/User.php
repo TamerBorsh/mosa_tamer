@@ -161,14 +161,14 @@ class User extends Authenticatable
         //         $q->where('coupon_id', $value);
         //     });
         // });
-        $builder->when($filters['coupon_id'] ?? null, function ($builder, $value) {
+        $builder->when($filters['couponid'] ?? null, function ($builder, $value) {
             $builder->whereDoesntHave('nominates', function ($q) use ($value) {
-                $q->whereIn('coupon_id', $value);
+                $q->whereIn('couponid', $value);
             });
         });
-        
-      
-        
+
+
+
 
         $builder->when($filters['count_childern'] ?? null, function ($builder, $value) {
             $builder->where('count_childern', '>=', $value);

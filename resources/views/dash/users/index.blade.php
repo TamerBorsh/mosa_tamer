@@ -210,9 +210,9 @@
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                        <label for="coupon_id">لم يستفيد من</label>
+                                        <label for="couponid">لم يستفيد من</label>
                                         <fieldset class="form-group">
-                                            <select class="form-control js-example-basic-single" id="coupon_id" name="coupon_id[]" multiple>
+                                            <select class="form-control js-example-basic-single" id="couponid" name="couponid[]" multiple>
                                                 @foreach($coupons as $item)
                                                 <option value="{{ $item->id }}">{{ $item->name }}</option>
                                                 @endforeach
