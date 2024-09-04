@@ -10,21 +10,26 @@
                         <div class="col-12">
                             <h3 class="text-center" style="font-family: 'JazeeraFont' !important; margin: 10px 0;">صرف الكابون للمستفيد</h3>
                         </div>
-                        <div class="col-12 col-sm-6 col-lg-7">
+                        <div class="col-12 col-lg-8">
                             <form id="addDataForm" class="d-flex justify-content-center" method="post">
                                 @csrf
                                 @method('post')
                                 <div class="row w-100">
-                                    <div class="col-12 col-md-8">
+                                    <div class="col-12 col-md-7">
                                         <div class="form-group validate">
                                             <label>رقم الهوية أو رقم الكابون:</label>
                                             <input type="text" class="form-control" name="number" value="{{ request('number') }}" placeholder="ابحث برقم الهوية أو رقم الكابون ..">
                                             <div class="help-block"></div>
                                         </div>
                                     </div>
-                                    <div class="col-12 col-md-4">
+                                    <div class="col-12 col-md-2">
                                         <div style="margin-top: 2rem !important;">
-                                            <button type="submit" class="btn btn-primary w-100">بحث</button>
+                                            <button type="submit" class="btn btn-info w-100">بحث</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-3">
+                                        <div style="margin-top: 2rem !important;">
+                                            <button type="submit" class="btn btn-danger w-100">طباعة التقرير اليومي</button>
                                         </div>
                                     </div>
                                 </div>
@@ -45,7 +50,6 @@
                                         <th>الهاتف</th>
                                         <th>تاريخ التسليم</th>
                                         <th>صرف</th>
-
                                     </tr>
                                 </thead>
                                 <tbody>

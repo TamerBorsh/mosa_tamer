@@ -2,8 +2,22 @@
 @section('title', 'المستفيدين | وزارة التنمية الاجتماعية')
 @section('stylesheet')
 <script src="/datatables-bs5/dataTables.min.css"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
     /* Custom styles for the toggle switch */
+<style>
+    .form-group {
+        width: 100%;
+    }
+
+    .form-control {
+        width: 100% !important; /* تأكد من أن العنصر يملأ العرض الكامل */
+    }
+
+    .select2-container {
+        width: 100% !important; /* تأكد من أن Select2 يملأ العرض الكامل */
+    }
+
     .switch {
         position: relative;
         display: inline-block;
@@ -147,15 +161,18 @@
                                             </select>
                                         </fieldset>
                                     </div>
-                                    <div class="col-12 col-sm-6 col-lg-3">
-                                        <div class="form-group validate">
-                                            <div class="controls">
-                                                <label>أقرب مسجد</label>
-                                                <input type="text" class="form-control" name="mosque" value="{{ request('mosque') }}">
-                                                <div class="help-block"></div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <!-- <div class="col-12 col-sm-6 col-lg-3">
+                                        <label for="gender">لم يستفيد من</label>
+                                        <fieldset class="form-group">
+                                            <select class="form-control" id="coupon_id" name="coupon_id">
+                                                <option value=""></option>
+                                                @foreach($coupons as $item)
+                                                <option value="{{$item->id}}" @selected(request('coupon_id')==$item->id)>{{$item->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </fieldset>
+                                    </div> -->
+                            
                                     <div class="col-12 col-sm-6 col-lg-3">
                                         <div class="form-group validate">
                                             <div class="controls">
@@ -191,6 +208,17 @@
                                                 <div class="help-block"></div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="coupon_id">لم يستفيد من</label>
+                                        <fieldset class="form-group">
+                                            <select class="form-control js-example-basic-single" id="coupon_id" name="coupon_id[]" multiple>
+                                                @foreach($coupons as $item)
+                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                @endforeach
+                                            </select>
+
+                                        </fieldset>
                                     </div>
                                     <div class="col-12 col-sm-6 col-lg-3 d-flex align-items-center">
                                         <button class="btn btn-block btn-info glow" id="exportWithSearch"> <i class="la la-search"></i> بحث</button>
@@ -474,9 +502,19 @@
 @endsection()
 @push('script')
 <script src="/datatables-bs5/dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 {!! $dataTable->scripts() !!}
 <script>
+    // In your Javascript (external .js resource or <script> tag)
+    $(document).ready(function() {
+        $('.js-example-basic-single').select2({
+            width: 'resolve', // هذا يساعد في حل مشكلة عرض Select2
+            placeholder: 'اختر الكوبونات',
+            allowClear: true
+        });
+    });
+
     $('body').on('click', '#showRow', async function() {
         const id = $(this).data('id');
         const url = "{{ url('/') }}";

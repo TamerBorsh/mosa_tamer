@@ -152,19 +152,34 @@ class User extends Authenticatable
             $builder->where('socialst', $value);
         });
 
-        $builder->when($filters['mosque'] ?? null, function ($builder, $value) {
-            $builder->where('mosque', 'LIKE', "%$value%");
+        // $builder->when($filters['mosque'] ?? null, function ($builder, $value) {
+        //     $builder->where('mosque', 'LIKE', "%$value%");
+        // });
+
+        // $builder->when($filters['coupon_id'] ?? null, function ($builder, $value) {
+        //     $builder->whereDoesntHave('nominates', function ($q) use ($value) {
+        //         $q->where('coupon_id', $value);
+        //     });
+        // });
+        $builder->when($filters['coupon_id'] ?? null, function ($builder, $value) {
+            $builder->whereDoesntHave('nominates', function ($q) use ($value) {
+                $q->whereIn('coupon_id', $value);
+            });
         });
+        
+      
+        
 
         $builder->when($filters['count_childern'] ?? null, function ($builder, $value) {
             $builder->where('count_childern', '>=', $value);
         });
 
-        // $builder->when($filters['month'] ?? null, function ($builder, $value) {
-        //     $builder->whereHas('nominates', function ($q) use ($value) {
-        //         $q->where(Carbon::parse($this->recive_date)->month, $value);
-        //     });
-        // });
+        $builder->when($filters['month'] ?? null, function ($builder, $value) {
+            $builder->whereHas('nominates', function ($q) use ($value) {
+                $q->whereMonth('recive_date', $value);
+            });
+        });
+
 
         $builder->when($filters['min_count'] ?? null, function ($builder, $value) {
             $builder->whereHas('nominates', function ($q) use ($value) {
