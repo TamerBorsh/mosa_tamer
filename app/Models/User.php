@@ -163,7 +163,7 @@ class User extends Authenticatable
         // });
         $builder->when($filters['couponid'] ?? null, function ($builder, $value) {
             $builder->whereDoesntHave('nominates', function ($q) use ($value) {
-                $q->whereIn('couponid', $value);
+                $q->whereIn('coupon_id', $value);
             });
         });
 
