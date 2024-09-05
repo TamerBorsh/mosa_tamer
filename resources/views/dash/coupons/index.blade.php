@@ -60,9 +60,22 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <fieldset class="form-group position-relative">
-                                                <label for="institution_id">المؤسسة</label>
+                                                <label for="institution_id">المؤسسة المنفذة</label>
                                                 <select class="form-control" id="institution_id" name="institution_id" require>
                                                     @foreach ($institutions as $item)
+                                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <fieldset class="form-group position-relative">
+                                                <label for="institution_support">المؤسسة الداعمة</label>
+                                                <select class="form-control" id="institution_support" name="institution_support" require>
+                                                    <option value=""></option>
+                                                    @foreach ($institutionSupport as $item)
                                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                                                     @endforeach
                                                 </select>
@@ -145,9 +158,22 @@
                                         <input type="hidden" name="id" id="id">
                                         <div class="form-group">
                                             <fieldset class="form-group position-relative">
-                                                <label for="e_institution_id">المؤسسة</label>
+                                                <label for="e_institution_id">المؤسسة المنفذة</label>
                                                 <select class="form-control" id="e_institution_id" name="institution_id" require>
                                                     @foreach ($institutions as $item)
+                                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <fieldset class="form-group position-relative">
+                                                <label for="e_institution_support">المؤسسة الداعمة</label>
+                                                <select class="form-control" id="e_institution_support" name="institution_support" require>
+                                                    <option value=""></option>
+                                                    @foreach ($institutionSupport as $item)
                                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                                                     @endforeach
                                                 </select>

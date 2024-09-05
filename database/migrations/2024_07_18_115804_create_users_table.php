@@ -41,7 +41,7 @@ return new class extends Migration
 
             $table->text('notes')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->boolean('is_print')->default(false);
+            // $table->boolean('is_print')->default(false);
 
             $table->boolean('is_death')->default(false);
             $table->date('death_date')->nullable();

@@ -20,8 +20,14 @@ class CouponController extends Controller
     public function index(CouponDataTable $datatable)
     {
         $locations = Location::get(['id', 'name']);
-        $institutions = Institution::get(['id', 'name']);
-        return $datatable->render('dash.coupons.index', ['locations' => $locations, 'institutions' => $institutions]);
+        $institutions = Institution::where('is_support', '0')->get(['id', 'name']);
+        $institutionSupport = Institution::where('is_support', '1')->get(['id', 'name']);
+        
+        return $datatable->render('dash.coupons.index', [
+            'locations'             => $locations,
+            'institutions'          => $institutions,
+            'institutionSupport'    => $institutionSupport
+        ]);
     }
 
     /**

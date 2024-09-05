@@ -56,7 +56,43 @@
                                             <input type="text" id="name" class="form-control" name="name" require>
                                         </div>
                                     </div>
+                                    <div class="col-12 col-lg-6">
+                                        <div class="form-group">
+                                            <label for="admin_name">اسم منسق المؤسسة</label>
+                                            <input type="text" id="admin_name" class="form-control" name="admin_name">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6">
+                                        <label for="is_support">المؤسسة</label>
+                                        <fieldset class="form-group">
+                                            <select class="form-control" id="is_support" name="is_support">
+                                                <option value=""></option>
+                                                <option value="0">منفذة</option>
+                                                <option value="1">داعمة</option>
+                                            </select>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="address">العنوان</label>
+                                            <input type="text" id="address" class="form-control" name="address">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="phone">جوال</label>
+                                            <input type="text" id="phone" class="form-control" name="phone">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="phone2">جوال 2</label>
+                                            <input type="text" id="phone2" class="form-control" name="phone2">
+                                        </div>
+                                    </div>
                                 </div>
+
+
                             </div>
                             <div class="form-actions">
                                 <button type="button" class="btn btn-warning mr-1" data-dismiss="modal">
@@ -88,6 +124,40 @@
                                         <div class="form-group">
                                             <label for="e_name">اسم الموظف</label>
                                             <input type="text" id="e_name" class="form-control" name="name" require>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6">
+                                        <div class="form-group">
+                                            <label for="e_admin_name">اسم منسق المؤسسة</label>
+                                            <input type="text" id="e_admin_name" class="form-control" name="admin_name">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6">
+                                        <label for="e_is_support">المؤسسة</label>
+                                        <fieldset class="form-group">
+                                            <select class="form-control" id="e_is_support" name="is_support">
+                                                <option value=""></option>
+                                                <option value="0">منفذة</option>
+                                                <option value="1">داعمة</option>
+                                            </select>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="e_address">العنوان</label>
+                                            <input type="text" id="e_address" class="form-control" name="address">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="e_phone">جوال</label>
+                                            <input type="text" id="e_phone" class="form-control" name="phone">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="e_phone2">جوال 2</label>
+                                            <input type="text" id="e_phone2" class="form-control" name="phone2">
                                         </div>
                                     </div>
                                 </div>
@@ -133,6 +203,12 @@
                 console.log(response)
                 $('#id').val(response.data.id);
                 $('#e_name').val(response.data.name);
+                $('#e_admin_name').val(response.data.admin_name);
+                $('#e_is_support').val(response.data.is_support);
+                $('#e_address').val(response.data.address);
+                $('#e_phone').val(response.data.phone);
+                $('#e_phone2').val(response.data.phone2);
+
             });
 
         // ====

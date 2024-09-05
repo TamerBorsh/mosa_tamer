@@ -127,11 +127,9 @@ class User extends Authenticatable
                 $query->where('name', 'LIKE', "%$value%")
                     ->orWhere('id-number', $value)
                     ->orWhere('id-number-wife', $value)
-                    ->orWhere('name-wife', 'LIKE', "%$value%")
-                    ->orWhere('notes', 'LIKE', "%$value%");
+                    ->orWhere('name-wife', 'LIKE', "%$value%");
             });
         });
-
         $builder->when($filters['is_active'] ?? null, function ($builder, $value) {
             $builder->where('is_active', $value);
         });
@@ -152,26 +150,18 @@ class User extends Authenticatable
             $builder->where('socialst', $value);
         });
 
-        // $builder->when($filters['mosque'] ?? null, function ($builder, $value) {
-        //     $builder->where('mosque', 'LIKE', "%$value%");
-        // });
-
-        // $builder->when($filters['coupon_id'] ?? null, function ($builder, $value) {
-        //     $builder->whereDoesntHave('nominates', function ($q) use ($value) {
-        //         $q->where('coupon_id', $value);
-        //     });
-        // });
         $builder->when($filters['couponid'] ?? null, function ($builder, $value) {
             $builder->whereDoesntHave('nominates', function ($q) use ($value) {
                 $q->whereIn('coupon_id', $value);
             });
         });
 
-
-
-
-        $builder->when($filters['count_childern'] ?? null, function ($builder, $value) {
-            $builder->where('count_childern', '>=', $value);
+        $builder->when($filters['count_childern_min'] ?? null, function ($builder, $minValue) {
+            $builder->where('count_childern', '>=', (int)$minValue);
+        });
+        
+        $builder->when($filters['count_childern_max'] ?? null, function ($builder, $maxValue) {
+            $builder->where('count_childern', '<=', (int)$maxValue);
         });
 
         $builder->when($filters['month'] ?? null, function ($builder, $value) {
@@ -197,15 +187,6 @@ class User extends Authenticatable
             });
         });
 
-
-        // $builder->when($filters['max_count'] ?? null, function ($builder, $value) {
-        //     $builder->leftJoin('users as wives', 'users.id-number', '=', 'wives.id-number-wife')
-        //             ->leftJoin('copons as user_copons', 'users.id', '=', 'user_copons.user_id')
-        //             ->leftJoin('copons as wife_copons', 'wives.id', '=', 'wife_copons.user_id')
-        //             ->select('users.*', DB::raw('GREATEST(COALESCE(COUNT(user_copons.id), 0), COALESCE(COUNT(wife_copons.id), 0)) as recive_count'))
-        //             ->groupBy('users.id')
-        //             ->havingRaw('recive_count >= ?', [$value]);
-        // });
     }
     // ================================================
 }

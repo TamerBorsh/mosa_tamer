@@ -25,6 +25,10 @@ class Nominate extends Model
     {
         return $this->belongsTo(Admin::class, 'admin_id');
     }
+    public function redemption(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class, 'redemption_id');
+    }
     public function coupon(): BelongsTo
     {
         return $this->belongsTo(Coupon::class, 'coupon_id');
@@ -73,6 +77,7 @@ class Nominate extends Model
         return '
             <div class="btn-group">
                 <button type="button" class="btn btn-sm" id="deleteNominate" data-id="' . $this->id . '" data-toggle="modal" data-target="#deletemodal"><i class="la la-trash"></i></button>
+                <button type="button" class="btn btn-sm" id="showRow" data-id="' . $this->id . '" data-toggle="modal" data-backdrop="false" data-target="#info"><div class="fonticon-wrap"><i class="la la-eye"></i></div></button>
             </div>
         ';
     }

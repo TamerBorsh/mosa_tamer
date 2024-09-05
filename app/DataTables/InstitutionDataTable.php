@@ -59,6 +59,10 @@ class InstitutionDataTable extends DataTable
         return [
             ['title' => '#', 'data' =>   'DT_RowIndex', 'orderable' => false, 'searchable' => false],
             ['title' => "اسم المؤسسة", 'data' =>   'name'],
+            ['title' => "اسم منسق المؤسسة", 'data' =>   'admin_name'],
+            ['title' => "العنوان", 'data' =>   'address'],
+            ['title' => "جوال 1", 'data' =>   'phone'],
+            ['title' => "جوال 2", 'data' =>   'phone2'],
             ['title' => "التعديل أو الحذف", 'data' => 'action', 'orderable' => false, 'searchable' => false]
         ];
     }

@@ -15,7 +15,7 @@
                                 @csrf
                                 @method('post')
                                 <div class="row w-100">
-                                    <div class="col-12 col-md-7">
+                                    <div class="col-12 col-md-6">
                                         <div class="form-group validate">
                                             <label>رقم الهوية أو رقم الكابون:</label>
                                             <input type="text" class="form-control" name="number" value="{{ request('number') }}" placeholder="ابحث برقم الهوية أو رقم الكابون ..">
@@ -27,7 +27,7 @@
                                             <button type="submit" class="btn btn-info w-100">بحث</button>
                                         </div>
                                     </div>
-                                    <div class="col-12 col-md-3">
+                                    <div class="col-12 col-md-4">
                                         <div style="margin-top: 2rem !important;">
                                             <button type="submit" class="btn btn-danger w-100">طباعة التقرير اليومي</button>
                                         </div>
@@ -49,6 +49,7 @@
                                         <th>تاريخ الميلاد</th>
                                         <th>الهاتف</th>
                                         <th>تاريخ التسليم</th>
+                                        <th>نوع الطرد</th>
                                         <th>صرف</th>
                                     </tr>
                                 </thead>
@@ -96,6 +97,7 @@
                          <td>${item.user['barh-of-date']}</td>
                         <td>${item.user['phone']}</td>
                         <td>${item.recive_date}</td>
+                        <td>${item.coupon.coupon_type}</td>
                         <td><button class="btn" id="updateRecive" style=" padding: 0; " data-id="${item.id}"><div class="fonticon-wrap"><i class="la la-check-square"></i></div></button></td>
                     </tr>
                 `);

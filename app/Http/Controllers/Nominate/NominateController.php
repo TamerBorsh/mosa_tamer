@@ -10,9 +10,11 @@ use App\Models\Mosque;
 use App\Models\Nominate;
 use App\Models\Region;
 use App\Models\State;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use Yajra\DataTables\Facades\DataTables;
 
 class NominateController extends Controller
 {
@@ -40,9 +42,8 @@ class NominateController extends Controller
     public function search(Request $request)
     {
         $number = $request->input('number');
-
         // البحث في نموذج Nominate مع تحميل بيانات المستخدم
-        $results = Nominate::with(['user:id,id-number,name,phone,barh-of-date']) // تحديث اسم العمود هنا
+        $results = Nominate::with(['user:id,id-number,name,phone,barh-of-date', 'coupon']) // تحديث اسم العمود هنا
             ->whereIn('is_recive', [1, 2]) // الشرط الأساسي: إما 1 أو 2
             ->where(function ($query) use ($number) {
                 $query->where('number_copon', $number)
@@ -51,7 +52,6 @@ class NominateController extends Controller
                     });
             })
             ->get();
-
         // التحقق من وجود نتائج
         if ($results->isEmpty()) {
             return response()->json(['message' => 'لا توجد نتائج مطابقة'], 404);
@@ -59,8 +59,40 @@ class NominateController extends Controller
 
         return response()->json($results);
     }
+    public function create()
+    {
+        return response()->view('dash.nominates.create', [
+            'states' => State::get(['id', 'name']),
+            'regions' => Region::get(['id', 'name']),
+            'mosques' => Mosque::get(['id', 'name']),
+            'locations' => Location::get(['id', 'name']),
+            'coupons' => Coupon::get(['id', 'name'])
+        ]);
+    }
 
+    public function filter(Request $request)
+    {
+        // تنفيذ فلترة البيانات بناءً على المدخلات
+        $data = User::filter($request->all())->Where('is_active', '1');
 
+        // تحقق من وجود بيانات
+        if ($data->count() === 0) {
+            return response()->json([
+                'data' => [],
+                'recordsTotal' => 0,
+                'recordsFiltered' => 0,
+            ]);
+        }
+        return DataTables::eloquent($data)
+            ->addColumn('check', function ($row) {
+                return $row->check();
+            })
+            ->editColumn('region_id', function ($row) {
+                return $row->region ? $row->region->name : '';
+            })
+            ->rawColumns(['check']) // تحديد الأعمدة التي تحتاج إلى تفسير كـ HTML
+            ->make(true); // تأكد من استخدام make('true') لإرجاع البيانات بشكل صحيح
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -72,7 +104,7 @@ class NominateController extends Controller
         $recive_date = $request->input('recive_date');
         $redirect_date = $request->input('redirect_date');
         $coupon_id = $request->input('coupon_id');
-
+        $block_date = $request->input('block_date');
         if ($ids && is_array($ids)) {
             foreach ($ids as $item) {
                 Nominate::create([
@@ -80,7 +112,8 @@ class NominateController extends Controller
                     'user_id'       => $item, // استخدام ID مباشرة هنا
                     'admin_id'      => Auth::id(),
                     'recive_date'   => $recive_date,
-                    'redirect_date' => $redirect_date,
+                    'redemption_id' => $redirect_date,
+                    'block_date'    => $block_date,
                     'is_recive'     => '1',
                 ]);
             }
@@ -94,7 +127,7 @@ class NominateController extends Controller
      */
     public function show(Nominate $nominate)
     {
-        //
+        return $nominate;
     }
 
     /**
@@ -137,6 +170,7 @@ class NominateController extends Controller
                     if ($nominate) {
                         $nominate->update([
                             'is_recive' => $isRecive,
+                            'redemption_id'      => Auth::id(),
                         ]);
                     }
                 }

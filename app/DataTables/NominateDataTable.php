@@ -34,6 +34,9 @@ class NominateDataTable extends DataTable
             ->editColumn('admin_id', function ($row) {
                 return $row->admin->name;
             })
+            ->editColumn('redemption_id', function ($row) {
+                return $row->redemption ? $row->redemption->name : '';
+            })
             ->addColumn('check', function ($row) {
                 return $row->check();
             })
@@ -83,15 +86,17 @@ class NominateDataTable extends DataTable
                     '</div>',
                 'data' => 'check',
                 'orderable' => false,
-                'searchable' => false
+                'searchable' => false,
+                'width'=>'10px'
             ],
             ['title' => "رقم الكوبون", 'data' => 'number_copon'],
             ['title' => "الهوية", 'data' => 'id_nubmer'],
             ['title' => "الاسم", 'data' => 'name'],
             ['title' => "نوع الطرد", 'data' => 'type'],
             ['title' => "الحالة", 'data' => 'is_recive', 'searchable' => false],
-            ['title' => "بواسطة", 'data' => 'admin_id', 'searchable' => false],
-            ['title' => "الحذف", 'data' => 'action', 'orderable' => false, 'searchable' => false]
+            ['title' => "ترشيح بواسطة", 'data' => 'admin_id', 'searchable' => false],
+            ['title' => "الصرف بواسطة", 'data' => 'redemption_id', 'searchable' => false],
+            ['title' => "الحذف والمزيد", 'data' => 'action', 'orderable' => false, 'searchable' => false]
         ];
     }
 

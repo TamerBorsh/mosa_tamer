@@ -4,8 +4,6 @@
 <script src="/datatables-bs5/dataTables.min.css"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
-    /* Custom styles for the toggle switch */
-<style>
     .form-group {
         width: 100%;
     }
@@ -87,7 +85,7 @@
 <section id="configuration">
     <div class="row">
         <div class="col-12">
-            <div class="card default-collapse collapse-icon accordion-icon-rotate">
+            <!-- <div class="card default-collapse collapse-icon accordion-icon-rotate">
                 <a id="headingCollapse12" class="card-header info" data-toggle="collapse" href="#collapse12" aria-expanded="false" aria-controls="collapse12">
                     <div class="card-title lead collapsed"> <i class="la la-search"></i> بحث متقدم</div>
                 </a>
@@ -161,18 +159,6 @@
                                             </select>
                                         </fieldset>
                                     </div>
-                                    <!-- <div class="col-12 col-sm-6 col-lg-3">
-                                        <label for="gender">لم يستفيد من</label>
-                                        <fieldset class="form-group">
-                                            <select class="form-control" id="coupon_id" name="coupon_id">
-                                                <option value=""></option>
-                                                @foreach($coupons as $item)
-                                                <option value="{{$item->id}}" @selected(request('coupon_id')==$item->id)>{{$item->name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </fieldset>
-                                    </div> -->
-                            
                                     <div class="col-12 col-sm-6 col-lg-3">
                                         <div class="form-group validate">
                                             <div class="controls">
@@ -228,7 +214,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="card">
                 <div class="card-header">
 
@@ -239,15 +225,14 @@
                         </ul>
                     </div>
                     <div class="form-group">
-                        <!-- basic buttons -->
-                        <form id="exportForm" action="{{ route('users.ExportEcel') }}" method="get" style="display: inline-block;">
+                        <!-- <form id="exportForm" action="{{ route('users.ExportEcel') }}" method="get" style="display: inline-block;">
                             @csrf
                             <button type="submit" class="btn btn-info btn-min-width mr-1 mb-1">
                                 <i class="la la-file-excel-o"></i> تصدير Excel
                             </button>
-                        </form>
+                        </form> -->
 
-                        <button type="button" class="btn btn-success  btn-min-width mr-1 mb-1" id="storeNominate"> <i class="la la-share-alt"></i> ترشيح</button>
+                        <!-- <button type="button" class="btn btn-success  btn-min-width mr-1 mb-1" id="storeNominate"> <i class="la la-share-alt"></i> ترشيح</button> -->
                     </div>
                 </div>
 
@@ -575,96 +560,96 @@
     });
     // ================
     // Click on "Check All" 
-    $('#check-all').click(function() {
-        if ($(this).prop('checked')) {
-            $('.custom-control-input').prop('checked', true);
-        } else {
-            $('.custom-control-input').prop('checked', false);
-        }
-    });
+    // $('#check-all').click(function() {
+    //     if ($(this).prop('checked')) {
+    //         $('.custom-control-input').prop('checked', true);
+    //     } else {
+    //         $('.custom-control-input').prop('checked', false);
+    //     }
+    // });
     // =====
     // store Nominate
-    $('body').on('click', '#storeNominate', function(e) {
-        e.preventDefault();
-        var selectedIds = [];
-        var table = $('#user-table');
+    // $('body').on('click', '#storeNominate', function(e) {
+    //     e.preventDefault();
+    //     var selectedIds = [];
+    //     var table = $('#user-table');
 
-        table.find('input[type="checkbox"]:checked').each(function() {
-            var id = $(this).attr('id').replace('user-', '');
-            if (id !== 'check-all') { // تأكد من عدم إضافة 'check-all'
-                selectedIds.push(id);
-            }
-        });
+    //     table.find('input[type="checkbox"]:checked').each(function() {
+    //         var id = $(this).attr('id').replace('user-', '');
+    //         if (id !== 'check-all') { // تأكد من عدم إضافة 'check-all'
+    //             selectedIds.push(id);
+    //         }
+    //     });
 
-        if (selectedIds.length > 0) {
-            // فتح المودال هنا
-            $('#selectionModal').modal('show');
+    //     if (selectedIds.length > 0) {
+    //         // فتح المودال هنا
+    //         $('#selectionModal').modal('show');
 
-            // عند النقر على زر تأكيد داخل المودال
-            $('#confirmSelection').off('click').on('click', function() {
-                // التحقق من الكمية المتاحة للكوبونات
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ route('coupons.checkQuantity') }}", // مسار إلى وظيفة للتحقق من الكمية
-                    data: {
-                        selectedIds: selectedIds,
-                        coupon_id: $('#coupon_id').val(),
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            // إذا كانت الكمية كافية، قم بإرسال الطلب لحفظ البيانات
-                            var formData = {
-                                selectedIds: selectedIds,
-                                coupon_id: $('#coupon_id').val(),
-                                recive_date: $('#recive_date').val(),
-                                redirect_date: $('#redirect_date').val(),
-                                _token: '{{ csrf_token() }}'
-                            };
-                            $.ajax({
-                                type: 'POST',
-                                url: "{{ route('nominates.store') }}",
-                                data: formData,
-                                success: function(response) {
-                                    showMessage({
-                                        icon: 'success',
-                                        title: 'تم ترشيح الأسماء بنجاح'
-                                    });
-                                    // إعادة تعيين النموذج
-                                    $('#selectionModal').find('form')[0].reset();
-                                    $('#selectionModal').modal('hide');
-                                },
-                                error: function(xhr) {
-                                    // تحسين إدارة الأخطاء
-                                    var errorMessage = xhr.responseJSON && xhr.responseJSON.message ?
-                                        xhr.responseJSON.message :
-                                        'حدث خطأ أثناء العملية. حاول مرة أخرى.';
-                                    showMessage({
-                                        icon: 'error',
-                                        title: errorMessage
-                                    });
-                                    $('#selectionModal').modal('hide');
-                                }
-                            });
-                        } else {
-                            showMessage({
-                                icon: 'error',
-                                title: 'لا توجد كمية كافية من الكوبونات.'
-                            });
-                        }
-                    },
-                    error: function(xhr) {
-                        // ...
-                    }
-                });
-            });
-        } else {
-            showMessage({
-                icon: 'error',
-                title: 'يرجى اختيار مرشحين أولا.'
-            });
-        }
-    });
+    //         // عند النقر على زر تأكيد داخل المودال
+    //         $('#confirmSelection').off('click').on('click', function() {
+    //             // التحقق من الكمية المتاحة للكوبونات
+    //             $.ajax({
+    //                 type: 'POST',
+    //                 url: "{{ route('coupons.checkQuantity') }}", // مسار إلى وظيفة للتحقق من الكمية
+    //                 data: {
+    //                     selectedIds: selectedIds,
+    //                     coupon_id: $('#coupon_id').val(),
+    //                     _token: '{{ csrf_token() }}'
+    //                 },
+    //                 success: function(response) {
+    //                     if (response.success) {
+    //                         // إذا كانت الكمية كافية، قم بإرسال الطلب لحفظ البيانات
+    //                         var formData = {
+    //                             selectedIds: selectedIds,
+    //                             coupon_id: $('#coupon_id').val(),
+    //                             recive_date: $('#recive_date').val(),
+    //                             redirect_date: $('#redirect_date').val(),
+    //                             _token: '{{ csrf_token() }}'
+    //                         };
+    //                         $.ajax({
+    //                             type: 'POST',
+    //                             url: "{{ route('nominates.store') }}",
+    //                             data: formData,
+    //                             success: function(response) {
+    //                                 showMessage({
+    //                                     icon: 'success',
+    //                                     title: 'تم ترشيح الأسماء بنجاح'
+    //                                 });
+    //                                 // إعادة تعيين النموذج
+    //                                 $('#selectionModal').find('form')[0].reset();
+    //                                 $('#selectionModal').modal('hide');
+    //                             },
+    //                             error: function(xhr) {
+    //                                 // تحسين إدارة الأخطاء
+    //                                 var errorMessage = xhr.responseJSON && xhr.responseJSON.message ?
+    //                                     xhr.responseJSON.message :
+    //                                     'حدث خطأ أثناء العملية. حاول مرة أخرى.';
+    //                                 showMessage({
+    //                                     icon: 'error',
+    //                                     title: errorMessage
+    //                                 });
+    //                                 $('#selectionModal').modal('hide');
+    //                             }
+    //                         });
+    //                     } else {
+    //                         showMessage({
+    //                             icon: 'error',
+    //                             title: 'لا توجد كمية كافية من الكوبونات.'
+    //                         });
+    //                     }
+    //                 },
+    //                 error: function(xhr) {
+    //                     // ...
+    //                 }
+    //             });
+    //         });
+    //     } else {
+    //         showMessage({
+    //             icon: 'error',
+    //             title: 'يرجى اختيار مرشحين أولا.'
+    //         });
+    //     }
+    // });
     // =============================
     $('body').on('click', '#deleteUser', function(e) {
         e.preventDefault();

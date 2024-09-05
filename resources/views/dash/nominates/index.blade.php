@@ -26,7 +26,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="col-12 col-sm-6 col-lg-3">
                                         <label for="state_id">المحافظة</label>
                                         <fieldset class="form-group">
@@ -117,7 +116,7 @@
                         </form>
 
 
-                        <button type="button" class="btn btn-success btn-min-width mr-1 mb-1" id="refreshFilter">
+                        <button type="button" class="btn btn-success btn-min-width mr-1 mb-1" id="refreshFilter" style=" color: #fff; ">
                             <i class="la la-share-alt"></i> تحديث الحالة
                         </button>
                     </div>
@@ -130,7 +129,7 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="table-responsive">
-                                    {!! $dataTable->table([
+                                        {!! $dataTable->table([
                                         'class' => 'table table-bordered table-striped dataTable no-footer',
                                         ]) !!}
                                     </div>
@@ -178,7 +177,54 @@
             </div>
         </div>
     </div>
+
 </section>
+<div class="modal fade text-left" id="info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel1">عرض بيانات</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="col-12 col-sm-6">
+                            <div class="form-group validate">
+                                <div class="controls">
+                                    <label for="recive_date">تاريخ الاستلام</label>
+                                    <input type="date" class="form-control" id="recive_date" readonly>
+                                    <div class="help-block"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="form-group validate">
+                                <div class="controls">
+                                    <label for="redirect_date">تاريخ الترشيح</label>
+                                    <input type="date" class="form-control" id="redirect_date" readonly>
+                                    <div class="help-block"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="form-group validate">
+                                <div class="controls">
+                                    <label for="block_date">تاريخ انتهاء الصرف</label>
+                                    <input type="date" class="form-control" id="block_date" readonly>
+                                    <div class="help-block"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
 @endsection()
 @push('script')
 <script src="/datatables-bs5/dataTables.min.js"></script>
@@ -253,8 +299,6 @@
             });
         }
     });
-
-
     // =============================
     $('body').on('click', '#deleteNominate', function(e) {
         e.preventDefault();
@@ -326,6 +370,22 @@
                 });
             }
         });
+    });
+    // =============================
+
+    $('body').on('click', '#showRow', async function() {
+        const id = $(this).data('id');
+        const url = "{{ url('/') }}";
+        try {
+            const response = await axios.get(`${url}/dash/nominates/${id}`);
+            const data = response.data;
+            // تحديث النموذج بالبيانات
+            $('#recive_date').val(data.recive_date);
+            $('#redirect_date').val(data.redirect_date);
+            $('#block_date').val(data.block_date);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
     });
 </script>
 @endpush

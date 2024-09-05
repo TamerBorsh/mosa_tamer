@@ -10,22 +10,20 @@
             </li>
             <li class=" nav-item"><a href="{{route('institutions.index')}}"><i class="la la-lock"></i><span class="menu-title">المؤسسات</span></a>
             </li>
-            <li class=" nav-item"><a href="{{route('coupons.index')}}"><i class="la la-lock"></i><span class="menu-title">الكابون</span></a>
+            <li class=" nav-item"><a href="{{route('coupons.index')}}"><i class="la la-lock"></i><span class="menu-title">الأصناف</span></a>
             </li>
             <li class=" nav-item"><a href="{{route('locations.index')}}"><i class="la la-lock"></i><span class="menu-title">المخازن والبركسات</span></a>
             </li>
-            <li class=" nav-item"><a href="{{route('mosques.index')}}"><i class="la la-lock"></i><span class="menu-title">المساجد</span></a>
+            <li class=" nav-item"><a href="{{route('mosques.index')}}"><i class="la la-lock"></i><span class="menu-title">المعالم</span></a>
             </li>
             <li class=" nav-item"><a href="{{route('nominates.couponRedemption')}}"><i class="la la-undo"></i><span class="menu-title" data-i18n="Hospital">صرف الكابون</span></a>
             </li>
 
             <li class=" nav-item"><a href="javascript:;"><i class="la la-user"></i><span class="menu-title">المستفيدين</span></a>
                 <ul class="menu-content">
-                    <li><a class="menu-item" href="{{route('users.index')}}"><i></i><span>عرض الكل</span></a>
+                    <li><a class="menu-item" href="{{route('users.index')}}"><i></i><span>عرض الجميع</span></a>
                     </li>
-                    <li><a class="menu-item" href="{{route('users.create')}}"><i></i><span>أضف جديد</span></a>
-                    </li>
-                    <li><a class="menu-item" href="{{route('users.create')}}"><i></i><span>تقديم طلب للاضافة</span></a>
+                    <li><a class="menu-item" href="{{route('users.create')}}"><i></i><span>أضف مستفيد جديد</span></a>
                     </li>
                     <li><a class="menu-item" href="{{route('users.importExcelForm')}}"><i></i><span>استيراد Excel</span></a>
                     </li>
@@ -33,18 +31,24 @@
             </li>
             <li class=" nav-item"><a href="javascript:;"><i class="la la-print"></i><span class="menu-title">المرشحين</span></a>
                 <ul class="menu-content">
-                    <li><a class="menu-item" href="{{route('nominates.index')}}"><i></i><span>عرض الكل</span></a>
-                    </li>
+                    <li><a class="menu-item" href="{{route('nominates.index')}}"><i></i><span>عرض الجميع</span></a></li>
+                    <li><a class="menu-item" href="{{route('nominates.create')}}"><i></i><span>شاشة الترشيح</span></a></li>
+
                     <li><a class="menu-item" href="{{route('nominates.importExcelForm')}}"><i></i><span>تحديث حالة المستفيد Excel</span></a>
                     </li>
                     <li><a class="menu-item" href="{{route('nominates.importNominatesForm')}}"><i></i><span>استيراد ملف ترشيح</span></a>
                     </li>
                 </ul>
             </li>
-            <li class=" nav-item"><a href="{{route('auth.logout')}}"><i class="la la-undo"></i><span class="menu-title" data-i18n="Hospital">تسجيل الخروج</span></a>
-            </li>
             <li class=" nav-item"><a href="{{route('logs.index')}}"><i class="la la-undo"></i><span class="menu-title" data-i18n="Hospital">أخطاء النظام</span></a>
+            </li>
+            <li class=" nav-item"><a href="{{route('auth.logout')}}"><i class="la la-undo"></i><span class="menu-title" data-i18n="Hospital">تسجيل الخروج</span></a>
             </li>
         </ul>
     </div>
 </div>
+<style>
+    i.toggle-icon.font-medium-3.white.ft-toggle-right {
+        color: #fff;
+    }
+</style>

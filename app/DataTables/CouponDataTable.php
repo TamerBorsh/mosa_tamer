@@ -22,13 +22,16 @@ class CouponDataTable extends DataTable
                 return $row->control;
             })
             ->editColumn('type', function ($row) {
-                return $row->copon_type;
+                return $row->CouponType;
             })
             ->editColumn('admin_id', function ($row) {
                 return $row->admin->name;
             })
             ->editColumn('institution_id', function ($row) {
                 return $row->institution->name;
+            })
+            ->editColumn('institution_support', function ($row) {
+                return $row->institutionsupport ? $row->institutionsupport->name: '';
             })
             ->editColumn('location_id', function ($row) {
                 return $row->location->name;
@@ -71,7 +74,8 @@ class CouponDataTable extends DataTable
         return [
             ['title' => '#', 'data' =>   'DT_RowIndex', 'orderable' => false, 'searchable' => false],
             ['title' => "الاسم", 'data' =>   'name'],
-            ['title' => "المؤسسة", 'data' =>   'institution_id'],
+            ['title' => "المؤسسة المنفذة", 'data' =>   'institution_id'],
+            ['title' => "المؤسسة الداعمة", 'data' =>   'institution_support'],
             ['title' => "البركس", 'data' =>   'location_id'],
             ['title' => "الكمية", 'data' =>   'quantity'],
             ['title' => "النوع", 'data' =>   'type'],
