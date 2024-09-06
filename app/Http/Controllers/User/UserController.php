@@ -11,6 +11,7 @@ use App\Models\Nominate;
 use App\Models\Region;
 use App\Models\State;
 use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,11 +19,15 @@ use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
     public function index(UserDataTable $datatable)
     {
+        $this->authorize('viewAny', User::class);
+
         return $datatable->render('dash.users.index', [
             'states' => State::get(['id', 'name']),
             'regions' => Region::get(['id', 'name']),
@@ -37,6 +42,8 @@ class UserController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', User::class);
+
         $states = State::get(['id', 'name']);
         $regions = Region::get(['id', 'name']);
         $mosques = Mosque::get(['id', 'name']);
@@ -48,6 +55,8 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', User::class);
+
         $isSave = User::create($request->all());
         if ($isSave)
             return response()->json(['message' => $isSave ? 'تم الحفظ' : 'هناك خطأ ما'], $isSave ? Response::HTTP_CREATED : Response::HTTP_BAD_REQUEST);
@@ -74,7 +83,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $this->authorize('Update', User::class);
     }
 
     /**
@@ -82,6 +91,8 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $this->authorize('Delete', User::class);
+
         $isDelete = $user->delete();
         return response()->json([
             'icon'  =>  $isDelete ? 'success' : 'error',

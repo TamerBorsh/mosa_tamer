@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="/app-assets/css-rtl/core/menu/menu-types/vertical-menu-modern.min.css">
     <link rel="stylesheet" type="text/css" href="/css/toastr.css">
     <link rel="stylesheet" href="/css/sweetalert2.min.css" />
-    <link rel="stylesheet" href="/datatables-bs5/main.css" /> @yield('stylesheet')
+ @yield('stylesheet')
     <style>
         @font-face {
             font-family: 'JazeeraFont';
@@ -51,56 +51,12 @@
         .dropdown-toggle::after {
             display: none;
         }
-
-        input[type="search"] {
-            border: 1px solid #ddd;
-        }
-
-        .table-striped tbody tr.even.selected,
-        .table-striped tbody tr.odd.selected,
-        table.dataTable tbody>tr>.selected {
-            background-color: #1e9ff2;
-        }
-
-        .dataTables_info {
-            display: inline;
-            margin: 10px 0 !important;
-
-        }
-        .dataTables_paginate {
-            text-align: center;
-            display: inline;
-            float: inline-end;
-            margin: 10px 0 !important;
-        }
-        .dataTables_paginate a {
-            color: #1e9ff2;
-            margin: 3px !important;
-            padding: 2px 6px 1px !important;
-            border: 1px solid #edeeef;
-        }
     </style>
 </head>
 
 <body class="vertical-layout vertical-menu-modern 2-columns fixed-navbar menu-collapsed" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns"> @include('dash.layouts.nav') @include('dash.layouts.menu') <div class="app-content content">
-        <div class="content-overlay"></div>
-        <div class="content-wrapper">
-            <div class="content-header row"> </div>
-            <div class="content-body"> @yield('content') </div>
-        </div>
-    </div>
-    <div class="sidenav-overlay"></div>
-    <div class="drag-target"></div>
-    <footer class="footer footer-static footer-light navbar-border navbar-shadow ">
-        <p class="clearfix blue-grey lighten-2 text-sm-center mb-0 px-2"><span class="float-md-left d-block d-md-inline-block">الحقوق محفوظة &copy; 2024 <a class="text-bold-800 grey darken-2" href="#" target="_blank">وزارة التنيمة الاجتماعية - غزة</a></span><span class="float-md-right d-none d-lg-block">...<span id="scroll-top"></span></span></p>
-    </footer>
-    <script src="/app-assets/vendors/js/vendors.min.js"></script>
-    <script src="/app-assets/js/core/app-menu.min.js"></script>
-    <script src="/app-assets/js/core/app.min.js" defer></script>
-    <script src="/js/main.js"></script>
-    <script src="/js/toastr.js" defer></script>
-    <script src="/js/axios.min.js" defer></script>
-    <script src="/js/sweetalert2.min.js" defer></script> @stack('script')
+    <div class="content-overlay"></div><div class="content-wrapper"><div class="content-header row"> </div><div class="content-body"> @yield('content') </div></div></div><div class="sidenav-overlay"></div><div class="drag-target"></div>
+    <footer class="footer footer-static footer-light navbar-border navbar-shadow "><p class="clearfix blue-grey lighten-2 text-sm-center mb-0 px-2"><span class="float-md-left d-block d-md-inline-block">الحقوق محفوظة &copy; 2024 <a class="text-bold-800 grey darken-2" href="#" target="_blank">وزارة التنيمة الاجتماعية - غزة</a></span><span class="float-md-right d-none d-lg-block">...<span id="scroll-top"></span></span></p></footer>
+    <script src="/app-assets/vendors/js/vendors.min.js"></script><script src="/app-assets/js/core/app-menu.min.js"></script><script src="/app-assets/js/core/app.min.js" defer></script><script src="/js/main.js"></script><script src="/js/toastr.js" defer></script><script src="/js/axios.min.js" defer></script><script src="/js/sweetalert2.min.js" defer></script> @stack('script')
 </body>
-
 </html>

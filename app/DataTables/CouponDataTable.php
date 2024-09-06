@@ -31,10 +31,16 @@ class CouponDataTable extends DataTable
                 return $row->institution->name;
             })
             ->editColumn('institution_support', function ($row) {
-                return $row->institutionsupport ? $row->institutionsupport->name: '';
+                return $row->institutionsupport ? $row->institutionsupport->name : '';
             })
             ->editColumn('location_id', function ($row) {
                 return $row->location->name;
+            })
+            ->addColumn('remaining_quantity', function ($row) {
+                return $row->remaining_quantity;;
+            })
+            ->editColumn('created_at', function ($row) {
+                return $row->created_at->format('Y-m-d');
             })
             ->setRowId('id')->rawColumns(['action']);
     }
@@ -78,8 +84,10 @@ class CouponDataTable extends DataTable
             ['title' => "المؤسسة الداعمة", 'data' =>   'institution_support'],
             ['title' => "البركس", 'data' =>   'location_id'],
             ['title' => "الكمية", 'data' =>   'quantity'],
+            ['title' => "المتبقي", 'data' =>   'remaining_quantity'],
             ['title' => "النوع", 'data' =>   'type'],
             ['title' => "بواسطة", 'data' =>   'admin_id', 'searchable' => false],
+            ['title' => "أضيف في", 'data' =>   'created_at', 'searchable' => false],
             ['title' => " الحذف", 'data' => 'action', 'orderable' => false, 'searchable' => false]
         ];
     }

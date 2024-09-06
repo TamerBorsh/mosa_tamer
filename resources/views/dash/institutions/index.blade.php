@@ -1,7 +1,7 @@
 @extends('dash.layouts.app')
 @section('title', 'المؤسسات | وزارة التنمية الاجتماعية')
 @section('stylesheet')
-<script src="/datatables-bs5/dataTables.min.css"></script>
+<link rel="stylesheet" href="/datatables-bs5/dataTables.min.css">
 @endsection
 @section('content')
 <section id="configuration">
@@ -181,6 +181,7 @@
 @endsection()
 @push('script')
 <script src="/datatables-bs5/dataTables.min.js"></script>
+<script src="/datatables-bs5/dataTables.bootstrap5.min.js"></script>
 {!! $dataTable->scripts() !!}
 <script>
     // Save Data

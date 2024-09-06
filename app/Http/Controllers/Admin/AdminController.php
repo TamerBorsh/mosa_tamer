@@ -19,7 +19,7 @@ class AdminController extends Controller
      */
     public function index(AdminDataTable $datatable)
     {
-        // $this->authorize('viewAny', Admin::class);
+        $this->authorize('viewAny', Admin::class);
         $roles = Role::whereGuard_name('admin')->get(['id', 'name']);
         return $datatable->render('dash.admins.index', ['roles' => $roles]);
     }
@@ -30,6 +30,8 @@ class AdminController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Admin::class);
+
         $role = Role::findById($request->input('role_id'), 'admin');
 
         $isSave = Admin::create($request->only(['name', 'phone', 'password', 'username']));
@@ -60,6 +62,8 @@ class AdminController extends Controller
      */
     public function update(Request $request)
     {
+        $this->authorize('update', Admin::class);
+
         // التحقق من القيم المرسلة
         $request->validate([
             'id' => 'required|exists:admins,id',
@@ -87,6 +91,8 @@ class AdminController extends Controller
      */
     public function destroy(Admin $admin)
     {
+        $this->authorize('delete', Admin::class);
+
         $isDelete = $admin->delete();
         return response()->json([
             'icon'  =>  $isDelete ? 'success' : 'error',

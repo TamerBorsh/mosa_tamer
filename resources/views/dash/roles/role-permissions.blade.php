@@ -6,6 +6,7 @@
         display: flex;
         flex-wrap: wrap;
         /* يسمح للقوائم الرئيسية بالتفاف */
+        gap: 1rem; /* استخدام gap لتحديد المسافة بين العناصر */
     }
 
     .box_permission {
@@ -13,11 +14,15 @@
         border: 1px solid #ddd;
         border-radius: 4px;
         margin: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* ظل بسيط لإبراز الكارد */
+        flex: 1 1 auto; /* يسمح للكارد بالنمو حسب المساحة المتاحة */
+        min-width: 200px; /* تحديد الحد الأدنى للعرض لضمان تناسق التصميم */
     }
 
     .box_permission ul {
         list-style-type: none;
         padding-left: 0;
+        margin: 0; /* إزالة الهوامش الافتراضية للقائمة */
     }
 
     .box_permission ul>li {
@@ -27,6 +32,7 @@
     .child_permissions {
         list-style-type: none;
         padding-left: 1rem;
+        margin: 0; /* إزالة الهوامش الافتراضية للقائمة الفرعية */
     }
 
     .child_permissions li {
@@ -51,7 +57,7 @@
                             <div class="custom-control custom-checkbox">
                                 <input class="custom-control-input selectAll" data-id="{{ $permission->id }}" type="checkbox" id="{{ $permission->id }}" onchange="update('{{ $role->id }}', '{{ $permission->id }}')" @checked($role->permissions->contains('pivot.permission_id', $permission->id))>
                                 <label for="{{ $permission->id }}" class="custom-control-label fw-bolder">
-                                    {{ $permission->name }} - {{ $permission->name_ar }}
+                                    {{ $permission->name_ar }}
                                 </label>
                             </div>
                         </li>
@@ -69,7 +75,7 @@
                                     @checked($role->permissions->contains('pivot.permission_id', $item->id))>
                                 <label for="{{ $item->id }}"
                                     class="custom-control-label">
-                                    {{ $item->name }} - {{ $item->name_ar }}
+                                     {{ $item->name_ar }}
                                 </label>
                             </div>
                         </li>

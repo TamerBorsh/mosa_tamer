@@ -1,7 +1,7 @@
 @extends('dash.layouts.app')
 @section('title', 'الموظفين | وزارة التنمية الاجتماعية')
 @section('stylesheet')
-<script src="/datatables-bs5/dataTables.min.css"></script>
+<link rel="stylesheet" href="/datatables-bs5/dataTables.min.css">
 @endsection
 @section('content')
 <section id="configuration">
@@ -182,6 +182,7 @@
 @endsection()
 @push('script')
 <script src="/datatables-bs5/dataTables.min.js"></script>
+<script src="/datatables-bs5/dataTables.bootstrap5.min.js"></script>
 {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
 <script>
     // Save Data
@@ -192,8 +193,8 @@
         var formData = new FormData(this) // OR new FormData($('#addDataForm')[0]);
         var formId = "#addDataForm";
         var reload = "#admin-table";
-
         addData(method, storeUrl, formData, formId, reload);
+        $('#add').modal('hide');
     });
     // =============================
     $('body').on('click', '#editRow', function() {
@@ -221,6 +222,7 @@
             var reload = "#admin-table";
 
             addData(method, storeUrl, formData, formId, reload);
+            $('#edit').modal('hide');
         });
     })
     // =============================

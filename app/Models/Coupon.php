@@ -31,6 +31,18 @@ class Coupon extends Model
     {
         return $this->belongsTo(Institution::class, 'institution_support');
     }
+
+    public function nominates()
+    {
+        return $this->hasMany(Nominate::class);
+    }
+
+    // ===========================
+    //  لحساب الكمية المتبقية
+    public function getRemainingQuantityAttribute()
+    {
+        return $this->quantity - $this->nominates->count();
+    }
     // ===========================
     public function getCouponTypeAttribute()
     {

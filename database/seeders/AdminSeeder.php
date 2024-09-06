@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Admin;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class AdminSeeder extends Seeder
 {
@@ -18,11 +19,8 @@ class AdminSeeder extends Seeder
             'username'  =>'tamer',
             'phone'     =>'0567762233',
             'password'  =>'password'
-        ],[
-            'name'      => 'رياض البيطار',
-            'username'  =>'reiad',
-            'phone'     =>'111',
-            'password'  =>'password'
         ]);
+        $user = Admin::first();
+        $user->assignRole(Role::findById(1, 'admin'));
     }
 }

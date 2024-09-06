@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Role;
 
 use App\DataTables\RoleDataTable;
 use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -11,11 +12,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
     public function index(RoleDataTable $datatable)
     {
+        $this->authorize('viewAny', Role::class);
         return $datatable->render('dash.roles.index');
     }
 
@@ -32,6 +36,7 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Role::class);
         $isSave = Role::create($request->all());
         if ($isSave)
             return response()->json(['message' => $isSave ? 'تم الحفظ' : 'هناك خطأ ما'], $isSave ? Response::HTTP_CREATED : Response::HTTP_BAD_REQUEST);
@@ -44,7 +49,7 @@ class RoleController extends Controller
     {
         $permissions = Permission::whereGuard_name('admin')->whereNull('parent_id')->get();
         $role = $role::whereId($role->id)->with('permissions')->first();
-// return $permissions;
+        // return $permissions;
         return response()->view('dash.roles.role-permissions', ['role' => $role, 'permissions' => $permissions]);
     }
 
@@ -62,6 +67,8 @@ class RoleController extends Controller
      */
     public function updateData(Request $request)
     {
+        $this->authorize('Update', Role::class);
+
         $role = Role::find($request->id);
         $isSave = $role->update($request->all());
         if ($isSave)
@@ -72,6 +79,8 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
+        $this->authorize('Delete', Role::class);
+
         $isDelete = $role->delete();
         return response()->json([
             'icon'  =>  $isDelete ? 'success' : 'error',

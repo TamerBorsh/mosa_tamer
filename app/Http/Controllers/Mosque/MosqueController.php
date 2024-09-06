@@ -6,16 +6,21 @@ use App\DataTables\MosqueDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Mosque;
 use App\Models\Region;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class MosqueController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
     public function index(MosqueDataTable $datatable)
     {
+        $this->authorize('viewAny', Mosque::class);
+
         $region = Region::get(['id', 'name']);
         return $datatable->render('dash.mosques.index', ['regions' => $region]);
     }
@@ -33,6 +38,8 @@ class MosqueController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Mosque::class);
+
         $isSave = Mosque::create($request->all());
         if ($isSave)
             return response()->json(['message' => $isSave ? 'تم الحفظ' : 'هناك خطأ ما'], $isSave ? Response::HTTP_CREATED : Response::HTTP_BAD_REQUEST);
@@ -59,6 +66,8 @@ class MosqueController extends Controller
      */
     public function updateData(Request $request)
     {
+        $this->authorize('update', Mosque::class);
+
         $mosque = Mosque::find($request->id);
         $isSave = $mosque->update($request->all());
         if ($isSave)
@@ -70,6 +79,8 @@ class MosqueController extends Controller
      */
     public function destroy(Mosque $mosque)
     {
+        $this->authorize('delete', Mosque::class);
+
         $isDelete = $mosque->delete();
         return response()->json([
             'icon'  =>  $isDelete ? 'success' : 'error',

@@ -38,7 +38,7 @@ class RoleDataTable extends DataTable
      */
     public function query(Role $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model->withCount('permissions')->newQuery();
     }
 
     /**

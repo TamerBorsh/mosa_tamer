@@ -4,33 +4,31 @@ namespace App\Policies;
 
 use App\Models\Admin;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Support\Facades\Auth;
 
 class AdminPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(): Response
+    public function viewAny(Admin $admin): Response
     {
         // return true;
-        return Auth::guard('admin')->check() && Auth::guard('admin')->user()->hasPermissionTo('Read-Admins') ? Response::allow() : Response::deny('You do not have permission to view admins.');
+        return $admin->hasPermissionTo('Read-Admins') ? Response::allow() : Response::deny('You do not have permission to view admins.');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(Admin $admin): Response
-    {
-        //
+    public function view(Admin $admin) {
+
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): Response
+    public function create(Admin $admin): Response
     {
-        //
+        return $admin->hasPermissionTo('Create-Admin') ? Response::allow() : Response::deny('You do not have permission to view admins.');
     }
 
     /**
@@ -38,7 +36,7 @@ class AdminPolicy
      */
     public function update(Admin $admin): Response
     {
-        //
+        return $admin->hasPermissionTo('Update-Admin') ? Response::allow() : Response::deny('You do not have permission to view admins.');
     }
 
     /**
@@ -46,7 +44,7 @@ class AdminPolicy
      */
     public function delete(Admin $admin): Response
     {
-        //
+        return $admin->hasPermissionTo('Delete-Admin') ? Response::allow() : Response::deny('You do not have permission to view admins.');
     }
 
     /**
