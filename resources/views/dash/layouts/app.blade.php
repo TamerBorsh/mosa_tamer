@@ -56,14 +56,13 @@
             float: right !important;
         }
 
-        .dataTables_info,
-        ul.pagination {
+        .dataTables_info {
             display: contents;
         }
 
         .dataTables_paginate {
             width: 100%;
-            text-align: end;
+            text-align: end !important;
         }
     </style>
 </head>
