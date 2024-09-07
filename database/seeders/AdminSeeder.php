@@ -19,23 +19,20 @@ class AdminSeeder extends Seeder
             'name'      => 'Tamer Alborsh',
             'username'  => 'tamer',
             'phone'     => '0567762233',
-            'password'  => 'tamer@0599', // تأكد من استخدام bcrypt لتشفير كلمة المرور
+            'password'  => 'tamer@0599', // استخدام bcrypt لتشفير كلمة المرور
         ]);
 
         // البحث عن الدور أو إنشاؤه إذا لم يكن موجوداً
-        $role = Role::where('name', 'Admin')->where('guard_name', 'admin')->first();
-
-        if (!$role) {
-            $role = Role::create(['name' => 'Admin', 'guard_name' => 'admin']);
-        }
+        $role = Role::firstOrCreate(
+            ['name' => 'Admin', 'guard_name' => 'admin']
+        );
 
         // إعطاء المستخدم دور محدد
         $admin->assignRole($role);
 
         // إعطاء جميع الصلاحيات للدور
-        $permissions = Permission::whereNotNull('parent_id')->get('id'); // جلب جميع الصلاحيات
-        foreach($permissions as $permission){
-            $role->givePermissionTo($permission);
-        }
+        $permissions = Permission::all(); // جلب جميع الصلاحيات بما فيها الصلاحيات الأساسية والفرعية
+
+        $role->syncPermissions($permissions); // استخدام syncPermissions لضمان تحديث الصلاحيات بشكل صحيح
     }
 }
