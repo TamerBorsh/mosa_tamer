@@ -19,7 +19,7 @@ class AdminSeeder extends Seeder
             'phone'     =>'0567762233',
             'password'  =>'password'
         ]);
-        $user = Admin::first();
-        $user->assignRole(Role::findById(1, 'admin'));
+        // $user = Admin::first();
+        // $user->assignRole(Role::findById(1, 'admin'));
     }
 }
