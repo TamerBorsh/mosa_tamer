@@ -28,9 +28,10 @@ class AdminSeeder extends Seeder
             'phone'     => '0567762233',
             'password'  => "tamer@0599", // تأكد من استخدام bcrypt لتشفير كلمة المرور
         ]);
-    
+        $role = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'admin']);
+
         // إعطاء المستخدم دور محدد (بإمكانك تخصيصه إذا أردت)
-        $user->assignRole(Role::findById(1, 'admin'));
+        $user->assignRole($role);
     
         // إعطاء جميع الصلاحيات للمستخدم
         $permissions = Permission::all(); // جلب جميع الصلاحيات
