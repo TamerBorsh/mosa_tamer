@@ -31,18 +31,20 @@ class PermissionSeeder extends Seeder
                 ['name' => 'Update-Role', 'name_ar' => 'تعديل بيانات دور'],
                 ['name' => 'Delete-Role', 'name_ar' => 'حذف دور'],
             ]],
-            // Roles
+
+            // Institutions
             ['name' => 'Institutions', 'name_ar' => 'المؤسسات', 'guard_name' => 'admin', 'children' => [
                 ['name' => 'Read-Institutions', 'name_ar' => 'عرض المؤسسات'],
                 ['name' => 'Create-Institution', 'name_ar' => 'إضافة مؤسسة'],
                 ['name' => 'Update-Institution', 'name_ar' => 'تعديل بيانات مؤسسة'],
                 ['name' => 'Delete-Institution', 'name_ar' => 'حذف مؤسسة'],
             ]],
+
             // Coupons
             ['name' => 'Coupons', 'name_ar' => 'الأصناف', 'guard_name' => 'admin', 'children' => [
                 ['name' => 'Read-Coupons', 'name_ar' => 'عرض التصنيفات'],
                 ['name' => 'Create-Coupon', 'name_ar' => 'إضافة تصنيف'],
-                ['name' => 'Create-Coupon', 'name_ar' => 'إضافة تصنيف'],
+                ['name' => 'Update-Coupon', 'name_ar' => 'تعديل تصنيف'],
                 ['name' => 'Delete-Coupon', 'name_ar' => 'حذف تصنيف'],
                 ['name' => 'Coupon-Redemption', 'name_ar' => 'صرف الكابون'],
             ]],
@@ -72,12 +74,12 @@ class PermissionSeeder extends Seeder
             ]],
 
             // Nominates
-            ['name' => 'Nominates', 'name_ar' => 'قائمة الترشيخ', 'guard_name' => 'admin', 'children' => [
+            ['name' => 'Nominates', 'name_ar' => 'قائمة الترشيح', 'guard_name' => 'admin', 'children' => [
                 ['name' => 'Read-Nominates', 'name_ar' => 'عرض المرشحين'],
                 ['name' => 'Create-Nominate', 'name_ar' => 'شاشة الترشيح'],
                 ['name' => 'Update-Nominate', 'name_ar' => 'تحديث حالة الكابون'],
                 ['name' => 'Delete-Nominate', 'name_ar' => 'حذف كابون'],
-                ['name' => 'Redemption', 'name_ar' => ' صرف الكابون'],
+                ['name' => 'Redemption', 'name_ar' => 'صرف الكابون'],
             ]],
 
             // Logs
@@ -96,21 +98,19 @@ class PermissionSeeder extends Seeder
     private function createPermissions(array $permissions, ?int $parentId = null): void
     {
         foreach ($permissions as $permission) {
-            // Check if guard_name exists, otherwise use a default value
-            $data = [
-                'name' => $permission['name'],
-                'name_ar' => $permission['name_ar'],
-                'guard_name' => $permission['guard_name'] ?? 'admin', // Use 'admin' as default if not provided
-            ];
-
-            if ($parentId) {
-                $data['parent_id'] = $parentId;
-            }
-
-            $createdPermission = Permission::create($data);
+            $existingPermission = Permission::firstOrCreate(
+                [
+                    'name' => $permission['name'],
+                    'guard_name' => $permission['guard_name'] ?? 'admin',
+                ],
+                [
+                    'name_ar' => $permission['name_ar'],
+                    'parent_id' => $parentId,
+                ]
+            );
 
             if (isset($permission['children'])) {
-                $this->createPermissions($permission['children'], $createdPermission->id);
+                $this->createPermissions($permission['children'], $existingPermission->id);
             }
         }
     }
