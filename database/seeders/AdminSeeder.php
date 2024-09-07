@@ -33,7 +33,9 @@ class AdminSeeder extends Seeder
         $admin->assignRole($role);
 
         // إعطاء جميع الصلاحيات للدور
-        $permissions = Permission::all(); // جلب جميع الصلاحيات
-        $role->givePermissionTo($permissions);
+        $permissions = Permission::whereNotNull('parent_id')->get('id'); // جلب جميع الصلاحيات
+        foreach($permissions as $permission){
+            $role->givePermissionTo($permission);
+        }
     }
 }
