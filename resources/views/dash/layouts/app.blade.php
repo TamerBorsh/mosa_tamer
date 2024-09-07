@@ -61,7 +61,7 @@
             display: contents;
         }
 
-        .dataTables_paginate paging_simple_numbers {
+        .dataTables_paginate {
             width: 100%;
             text-align: end;
         }
