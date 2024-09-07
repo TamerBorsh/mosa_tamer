@@ -14,26 +14,25 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        // Admin::create([
-        //     'name'      => 'Tamer Alborsh',
-        //     'username'  =>'tamer',
-        //     'phone'     =>'0567762233',
-        //     'password'  =>'password'
-        // ]);
-        // $user = Admin::first();
-        // $user->assignRole(Role::findById(1, 'admin'));
-        $user = Admin::create([
+        // إنشاء المستخدم
+        $admin = Admin::create([
             'name'      => 'Tamer Alborsh',
             'username'  => 'tamer',
             'phone'     => '0567762233',
-            'password'  => "tamer@0599", // تأكد من استخدام bcrypt لتشفير كلمة المرور
+            'password'  => 'tamer@0599', // تأكد من استخدام bcrypt لتشفير كلمة المرور
         ]);
-        $role = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'admin']);
 
-        // إعطاء المستخدم دور محدد (بإمكانك تخصيصه إذا أردت)
-        $user->assignRole($role);
-    
-        // إعطاء جميع الصلاحيات للمستخدم
+        // البحث عن الدور أو إنشاؤه إذا لم يكن موجوداً
+        $role = Role::where('name', 'Admin')->where('guard_name', 'admin')->first();
+
+        if (!$role) {
+            $role = Role::create(['name' => 'Admin', 'guard_name' => 'admin']);
+        }
+
+        // إعطاء المستخدم دور محدد
+        $admin->assignRole($role);
+
+        // إعطاء جميع الصلاحيات للدور
         $permissions = Permission::all(); // جلب جميع الصلاحيات
         $role->givePermissionTo($permissions);
     }
