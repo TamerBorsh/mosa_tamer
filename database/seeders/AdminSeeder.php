@@ -35,6 +35,6 @@ class AdminSeeder extends Seeder
     
         // إعطاء جميع الصلاحيات للمستخدم
         $permissions = Permission::all(); // جلب جميع الصلاحيات
-        $user->givePermissionTo($permissions);
+        $role->givePermissionTo($permissions);
     }
 }
