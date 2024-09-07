@@ -22,6 +22,7 @@ class ImportExcelJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $filePath;
     protected $adminId;
+    public $timeout = 3600; // 1 ساعة بالثواني
 
     /**
      * Create a new job instance.

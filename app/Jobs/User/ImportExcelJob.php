@@ -17,7 +17,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 class ImportExcelJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    public $timeout = 3600;
+    public $timeout = 3600; // 1 ساعة بالثواني
+
     protected $filePath;
     /**
      * Create a new job instance.
