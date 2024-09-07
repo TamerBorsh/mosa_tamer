@@ -12,6 +12,11 @@ class AdminSeeder extends Seeder
     /**
      * Run the database seeds.
      */
+    use Illuminate\Support\Facades\Hash;
+    use Spatie\Permission\Models\Role;
+    use Spatie\Permission\Models\Permission;
+    use App\Models\Admin;
+
     public function run(): void
     {
         // إنشاء المستخدم
@@ -19,7 +24,7 @@ class AdminSeeder extends Seeder
             'name'      => 'Tamer Alborsh',
             'username'  => 'tamer',
             'phone'     => '0567762233',
-            'password'  => 'tamer@0599', // استخدام bcrypt لتشفير كلمة المرور
+            'password'  => 'tamer@0599', // تأكد من استخدام bcrypt لتشفير كلمة المرور
         ]);
 
         // البحث عن الدور أو إنشاؤه إذا لم يكن موجوداً
@@ -30,9 +35,13 @@ class AdminSeeder extends Seeder
         // إعطاء المستخدم دور محدد
         $admin->assignRole($role);
 
-        // إعطاء جميع الصلاحيات للدور
-        $permissions = Permission::all(); // جلب جميع الصلاحيات بما فيها الصلاحيات الأساسية والفرعية
+        // جلب جميع الصلاحيات
+        $permissions = Permission::all();
 
-        $role->syncPermissions($permissions); // استخدام syncPermissions لضمان تحديث الصلاحيات بشكل صحيح
+        // التأكد من أن هناك صلاحيات متاحة
+        if ($permissions->isNotEmpty()) {
+            // إعطاء جميع الصلاحيات للدور
+            $role->syncPermissions($permissions); // استخدام syncPermissions لضمان تحديث الصلاحيات بشكل صحيح
+        }
     }
 }
