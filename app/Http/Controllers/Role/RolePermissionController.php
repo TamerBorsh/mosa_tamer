@@ -14,39 +14,17 @@ class RolePermissionController extends Controller
     {
         $permission = Permission::findOrFail($request->input('permission_id'));
 
-        $message = '';
+        $permissions = $permission->parent_id === null && $permission->childrens->isNotEmpty()
+            ? $permission->childrens
+            : collect([$permission]);
 
-        if ($permission->parent_id == null) {
-            if (count($permission->childrens) > 0) {
-                foreach ($permission->childrens as $child) {
+        $action = $role->hasPermissionTo($permission) ? 'revokePermissionTo' : 'givePermissionTo';
 
-                    if ($role->hasPermissionTo($child)) {
-                        $role->revokePermissionTo($child);
-                        $message = 'تم ازالة الصلاحية';
-                    } else {
-                        $role->givePermissionTo($child);
-                        $message = 'تم ربط الصلاحية';
-                    }
-                }
-            } else {
-                if ($role->hasPermissionTo($permission)) {
-                    $role->revokePermissionTo($permission);
-                    $message = 'تم ازالة الصلاحية';
-                } else {
-                    $role->givePermissionTo($permission);
-                    $message = 'تم ربط الصلاحية';
-                }
-            }
-        } else {
+        $permissions->each(function ($perm) use ($role, $action) {
+            $role->$action($perm);
+        });
 
-            if ($role->hasPermissionTo($permission)) {
-                $role->revokePermissionTo($permission);
-                $message = 'تم ازالة الصلاحية';
-            } else {
-                $role->givePermissionTo($permission);
-                $message = 'تم ربط الصلاحية';
-            }
-        }
+        $message = $action === 'givePermissionTo' ? 'تم ربط الصلاحية' : 'تم ازالة الصلاحية';
 
         return response()->json(['message' => $message], Response::HTTP_OK);
     }
