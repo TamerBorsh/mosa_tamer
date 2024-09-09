@@ -53,14 +53,15 @@
                     {{-- @can('Read-Nominates') --}}
                     <li><a class="menu-item" href="{{route('nominates.index')}}"><i></i><span>عرض الجميع</span></a></li>
                     {{-- @endcan --}}
-                    @can('Create-Nominate')
+                    {{-- @can('Create-Nominate') --}}
                     <li><a class="menu-item" href="{{route('nominates.create')}}"><i></i><span>شاشة الترشيح</span></a></li>
                     {{-- @endcan --}}
                     {{-- @can('Update-Nominate') --}}
                     <li><a class="menu-item" href="{{route('nominates.importExcelForm')}}"><i></i><span>تحديث حالة المستفيد Excel</span></a>
                     </li>
                     {{-- @endcan --}}
-                    @can('Create-Nominate')<li><a class="menu-item" href="{{route('nominates.importNominatesForm')}}"><i></i><span>استيراد ملف ترشيح</span></a>
+                    {{-- @can('Create-Nominate') --}}
+                    <li><a class="menu-item" href="{{route('nominates.importNominatesForm')}}"><i></i><span>استيراد ملف ترشيح</span></a>
                     </li>
                     {{-- @endcan --}}
                 </ul>
