@@ -17,6 +17,7 @@ use App\Http\Controllers\Role\RolePermissionController;
 use App\Http\Controllers\User\ExportUserController;
 use App\Http\Controllers\User\ImportUserController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\User\UserProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Auth Route
@@ -27,6 +28,14 @@ Route::group(['middleware' => 'auth:admin,web', 'prefix' => 'dash'], function ()
         Route::get('/',                         'index')->name('dash.index');
         Route::get('/chart-nominates',             'ChartNominates')->name('dash.ChartRecive');
         Route::get('/chart-locations',          'ChartLocation')->name('dash.ChartLocation');
+    });
+    Route::controller(UserProfileController::class)->prefix('users')->group(function () {
+        Route::post('/update-phone',                         'updatePhone')->name('users.updatePhone');
+        Route::get('/my-detalies',        'detalies')->name('users.my_detalies');
+        Route::get('/problems',        'problem')->name('users.problem');
+        Route::post('/problems/store',        'store')->name('users.problem.store');
+        Route::get('/problems/show/{id}',        'show')->name('users.problem.show');
+
     });
 });
 

@@ -221,7 +221,7 @@
                                         <div class="tab-pane" id="information" aria-labelledby="information-tab" role="tabpanel">
                                             <!-- ===================== -->
                                             <div class="table-responsive">
-                                                <table class="table dataTable" id="table_reciver">
+                                                <table class="table table-bordered table-striped dataTable no-footer" id="table_reciver">
                                                     <thead>
                                                         <tr>
                                                             <th class="sorting">{{ __('#') }}</th>

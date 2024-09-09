@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dash;
 
 use App\Http\Controllers\Controller;
 use App\Models\Nominate;
+use App\Models\Region;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -42,13 +43,13 @@ class DashController extends Controller
                 'userInActive'              => $userInActive
             ]);
         } else {
-            return abort(403, 'لا يوجد لديك صلاحيات');
         }
 
-        // if (Auth::guard('web')->check() && Auth::guard('web')->user()->hasPermissionTo('Read-Admins')) {
-
-        // } else {
-        // }
+        if (Auth::guard('web')->check()) {
+            $regions = Region::get(['id', 'name']);
+            return response()->view('dash.users.user.index', ['regions' => $regions]);
+        }
+        return abort(403, 'You do not have permission');
     }
 
     public function ChartNominates()

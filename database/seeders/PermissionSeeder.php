@@ -84,6 +84,7 @@ class PermissionSeeder extends Seeder
 
             // Logs
             ['name' => 'Logs', 'name_ar' => 'أخطاء النظام', 'guard_name' => 'admin'],
+            
         ];
 
         $this->createPermissions($permissions);

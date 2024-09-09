@@ -97,7 +97,7 @@
                          <td>${item.user['barh-of-date']}</td>
                         <td>${item.user['phone']}</td>
                         <td>${item.recive_date}</td>
-                        <td>${item.coupon.coupon_type}</td>
+                        <td>${item.coupon.CouponType}</td>
                         <td><button class="btn" id="updateRecive" style=" padding: 0; " data-id="${item.id}"><div class="fonticon-wrap"><i class="la la-check-square"></i></div></button></td>
                     </tr>
                 `);

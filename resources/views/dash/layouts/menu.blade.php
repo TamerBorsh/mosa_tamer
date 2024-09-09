@@ -1,10 +1,8 @@
 <div class="main-menu menu-fixed menu-dark menu-accordion menu-shadow" data-scroll-to-active="true">
     <div class="main-menu-content">
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-            @can('Statistics')
             <li class=" nav-item"><a href="{{route('dash.index')}}"><i class="la la-dashboard"></i><span class="menu-title">الرئيسية</span></a>
             </li>
-            @endcan
             @can('Read-Admins')
             <li class=" nav-item"><a href="{{route('admins.index')}}"><i class="la la-user-plus"></i><span class="menu-title">الموظفين</span></a>
             </li>@endcan
@@ -55,6 +53,8 @@
             @can('Logs')
             <li class=" nav-item"><a href="{{route('logs.index')}}"><i class="la la-undo"></i><span class="menu-title" data-i18n="Hospital">أخطاء النظام</span></a>
             </li>@endcan
+            <li class=" nav-item"><a href="{{route('users.problem')}}"><i class="la la-undo"></i><span class="menu-title" data-i18n="Hospital">الشكاوي</span></a>
+            </li>
             <li class=" nav-item"><a href="{{route('auth.logout')}}"><i class="la la-undo"></i><span class="menu-title" data-i18n="Hospital">تسجيل الخروج</span></a>
             </li>
         </ul>
