@@ -60,17 +60,24 @@ class ImportExcelJob implements ShouldQueue
                     // Check if the user exists
                     $userId = $row['0'] ?? null;
 
-                    // Prepare user data
-                    $userData = $this->prepareUserData($row, $birthdate);
 
-                    if (in_array($userId, $existingUsers)) {
-                        // Update existing user
-                        $filteredData = array_filter($userData, fn($value) => $value !== null);
-                        User::where('id-number', $userId)->update($filteredData);
-                    } else {
-                        // Create a new user if not exists
-                        User::create($userData);
-                    }
+                    // ====================
+                    $dd = User::where('id-number', $userId)->update(['is_active', 0]);
+
+                    // ====================
+
+
+                    // Prepare user data
+                    // $userData = $this->prepareUserData($row, $birthdate);
+
+                    // if (in_array($userId, $existingUsers)) {
+                    //     // Update existing user
+                    //     $filteredData = array_filter($userData, fn($value) => $value !== null);
+                    //     User::where('id-number', $userId)->update($filteredData);
+                    // } else {
+                    //     // Create a new user if not exists
+                    //     User::create($userData);
+                    // }
                 }
             }
         } catch (\Exception $e) {
