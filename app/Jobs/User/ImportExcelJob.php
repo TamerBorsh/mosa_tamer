@@ -64,7 +64,7 @@ class ImportExcelJob implements ShouldQueue
                     // ====================
                     $dd = User::where('id-number', $userId)->first();
                     if(!$dd){
-                        $dd->update(['is_active', 0]);
+                        $dd->update(['is_active', false]);
                     }
 
                     // ====================

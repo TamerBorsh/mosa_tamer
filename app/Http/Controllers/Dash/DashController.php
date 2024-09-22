@@ -34,7 +34,7 @@ class DashController extends Controller
                 $query->whereMonth('recive_date',  Carbon::now()->month);
             })->count();
 
-            $userInActive = User::whereIs_active('0')->count();
+            $userInActive = User::where('is_active', false)->count();
 
             return response()->view('dash.index', [
                 'users' => $usersCount,
